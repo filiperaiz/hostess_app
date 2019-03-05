@@ -1,0 +1,28 @@
+{
+  "name": "hostess",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "all": "electron-packager ./hostess_app Hostess --platform=all",
+    "app": "electron-packager ./ hostess_app Hostess",
+    "start": "electron .",
+    "server": "server.js",
+    "reload": "live-reload ./ --port 35729"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^4.0.6",
+    "electron-packager": "^13.1.0",
+    "live-reload": "^1.1.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "ip": "^1.1.5",
+    "moment": "^2.24.0",
+    "socket.io": "^2.2.0"
+  }
+}

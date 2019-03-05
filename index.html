@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+		<!-- Bootstrap CSS -->
+		<link href="./assets/css/bootstrap.css" rel="stylesheet" />
+		<link href="./assets/css/main.css" rel="stylesheet" />
+		
+        <!-- Vue Js -->
+		<script src="./assets/js/vue.js"></script>
+
+		<title>Hostess Monitor</title>
+	</head>
+    
+    <body>
+		<div id="app">
+			<section v-show="!callUser" class="welcome">
+				<div class="container">
+					<div class="row justify-content-md-center">
+						<div class="col">
+							<div class="infos">
+								<img class="logo" :src="hospital.logo" alt="" />
+								<h1 class="name">
+									Seja bem vindo ao <br />{{ hospital.name }}
+								</h1>
+								<h2 class="current-time">{{ currentTime }}</h2>
+								<h2 class="current-date">{{ currentDate }}</h2>
+								<h2 class="current-date">count: {{ num }}</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section v-show="callUser" class="calling-user">
+				<div class="container">
+					<div class="row justify-content-md-center">
+						<div class="col">
+							<div class="infos">
+								<img class="photo" :src="user.photo" alt="" />
+								<h3 class="name">{{ user.name }}</h3>
+								<h4 class="destination">
+									{{ user.destination }}
+								</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section v-if="lastCalls.length > 0 && !callUser" class="last-calls">
+				<div class="container">
+					<div class="row">
+						<div class="col-3" v-for="item in lastCalls">
+							<div class="box-card clearfix">
+								<div class="card-photo">
+									<img
+										class="photo"
+										:src="item.photo"
+										alt=""
+									/>
+								</div>
+								<div class="card-body">
+									<h5 class="name">{{ item.name }}</h5>
+									<p class="destination">
+										{{ item.destination }}
+									</p>
+									<!-- <p class="time">{{ item.time }}</p> -->
+									<!-- <p class="time">{{ updateLastCall(item.time) }}</p> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<footer>
+				<p>{{ copyright }}</p>
+			</footer>
+		</div>
+
+		<!-- JavaScript -->
+		<script src="http://localhost:35729/livereload.js"></script>
+		<script src="./assets/js/jquery.js"	onload="window.$ = window.jQuery = module.exports;"
+		></script>
+        <script src="./assets/js/popper.js"></script>
+        <script src="./assets/js/bootstrap.js"></script>
+		<script src="./assets/js/socket.js"></script>
+		<script src="./assets/js/main.js"></script>
+	</body>
+</html>
