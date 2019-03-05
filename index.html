@@ -28,7 +28,6 @@
 								</h1>
 								<h2 class="current-time">{{ currentTime }}</h2>
 								<h2 class="current-date">{{ currentDate }}</h2>
-								<h2 class="current-date">count: {{ num }}</h2>
 							</div>
 						</div>
 					</div>
@@ -68,8 +67,7 @@
 									<p class="destination">
 										{{ item.destination }}
 									</p>
-									<!-- <p class="time">{{ item.time }}</p> -->
-									<!-- <p class="time">{{ updateLastCall(item.time) }}</p> -->
+									<p class="time">{{ updateLastCall(item.time) }}</p>
 								</div>
 							</div>
 						</div>
@@ -89,6 +87,6 @@
         <script src="./assets/js/popper.js"></script>
         <script src="./assets/js/bootstrap.js"></script>
 		<script src="./assets/js/socket.js"></script>
-		<script src="./assets/js/main.js"></script>
+		<script src="./assets/js/app.js"></script>
 	</body>
 </html>

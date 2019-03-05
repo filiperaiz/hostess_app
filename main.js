@@ -1,12 +1,16 @@
-const { app, BrowserWindow } = require('electron');
-
+const { app, BrowserWindow} = require('electron');
+const path = require('path')
 let win = null;
 
 const createWindow = () => {
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 1200,
-		height: 800
+		width: 1920,
+        height: 1080,
+        fullscreen: false,
+        backgroundColor: '#369f93',
+        transparent: false,
+        icon: path.join(__dirname, '/assets/icons/mac/icon.icns')
 	});
 
 	// and load the index.html of the app.
@@ -16,7 +20,7 @@ const createWindow = () => {
     let server = require('./server/server.js')
 
     // Open the DevTools.
-    win.openDevTools();
+    // win.openDevTools();
     
     // Emitted when the window is closed
 	win.on('closed', function() {

@@ -1,38 +1,35 @@
-const http = require('http')
-const path = require('path')
-const express = require('express')
-const bodyParser = require('body-parser')
-const socketio = require('socket.io')
-const ip = require('ip')
+const http = require('http');
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const socketio = require('socket.io');
 
-const log = console.log
+const httpServer = http.Server(app);
+const io = socketio(httpServer);
 
-const address = ip.address()
+const ip = require('ip');
+const address = ip.address();
+const httpPort = 3030;
 
-const httpPort = 3030
+const app = express();
 
-const connectUrl = `${address}:${httpPort}`
-
-const app = express()
-app.use(express.static(path.join(__dirname, '/assets/')))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-
-const httpServer = http.Server(app)
-
-const io = socketio(httpServer)
+app.use(express.static(path.join(__dirname, '/assets/')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (request, response) => {
-  response.sendFile(path.join(__dirname, '/index.html'))
-})
+	response.sendFile(path.join(__dirname, '/index.html'));
+});
 
 app.post('/', (request, response) => {
-  response.setHeader('Content-Type', 'application/json');
-  response.send({message: 'Received!'})
-  io.emit('emitMessage', request.body)
-  log('\n' + JSON.stringify(request.body))
-})
+	response.setHeader('Content-Type', 'application/json');
+	response.send({
+		message: 'Message received!'
+	});
+	io.emit('emitMessage', request.body);
+	console.log('\n' + JSON.stringify(request.body));
+});
 
 httpServer.listen(httpPort, () => {
-    log(`> HTTP Server is running on: ${address}:${httpPort}`)
-})
+	console.log(`> HTTP Server is running on: ${address}:${httpPort}`);
+});

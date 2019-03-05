@@ -7,20 +7,12 @@ moment.locale('pt-br')
 const vm = new Vue({
     el: '#app',
     data: {
-        pathUrl:
-            'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
+        pathUrl: 'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
         config: {
             headers: { 'Content-Type': 'application/json' }
         },
-        hospital: {
-            name: '',
-            logo: ''
-        },
-        user: {
-            name: '',
-            photo: '',
-            destination: ''
-        },
+        hospital: {},
+        user: {},
         lastCalledList: [],
         callUser: false,
         currentTime: null,
@@ -36,28 +28,23 @@ const vm = new Vue({
     },
 
     methods: {
-        showCallUser(msg) {
-            this.user.photo = msg.photo;
-            this.user.name = msg.name;
-            this.user.destination = msg.destination;
+        showCallUser(itemCall) {
+            this.user = {};
+            this.user.photo = itemCall.photo;
+            this.user.name = itemCall.name;
+            this.user.destination = itemCall.destination;
 
             this.callUser = true;
+
+            this.voiceCallUser(itemCall)
         },
 
-        hideCallUser() {
-            setTimeout(() => {
-                this.user = {};
-                this.callUser = false;
-                console.log('hideCallUser');
-            }, 2000);
-        },
-
-        voiceCallUser(msg) {
-            let treatment = msg.treatment || '';
+        voiceCallUser(itemCall) {
+            let treatment = itemCall.treatment || '';
 
             treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-            let voiceMessage = `${treatment} ${msg.name}, por favor, dirija-se ao ${msg.destination}.`;
+            let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
 
             voiceMessage = voiceMessage.replace(/  +/g, ' ');
             
@@ -66,14 +53,16 @@ const vm = new Vue({
             if ('speechSynthesis' in window) {
                 const speech = new SpeechSynthesisUtterance();
                 speech.lang = 'pt-BR';
-                speech.rate = 1;
+                speech.rate = 0.8;
                 speech.volume = 0;
                 speech.text = voiceMessage;
                 
                 speechSynthesis.speak(speech);
 
-                speech.onend = () => {
-                    self.hideCallUser()
+                speech.onend = function(event) {
+                    console.log('Speech has finished after ' + event.elapsedTime + ' milliseconds.');
+                    self.listLastCalls(itemCall)
+                    self.hideCallUser(event.elapsedTime)
                 }
               }
         },
@@ -97,24 +86,35 @@ const vm = new Vue({
             }
         },
 
-        updateCurrentTime() {
-            this.currentTime = moment().format('LTS');
+        hideCallUser(time) {
+            setTimeout(() => {
+                this.callUser = false;
+            }, time);
         },
 
-        // updateLastCall(time) {
-        //     if (this.lastCalledList.length > 0) {
-        //         return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow()
-        //     }
-        // },
-
+        updateLastCall(time) {
+            if (this.lastCalledList.length > 0) {
+                return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow()
+            }
+        },
     },
 
     created: function () {
+        // get information hospital
         axios.get(this.pathUrl, this.config).then(response => {
             this.hospital.name = response.data.name;
             this.hospital.logo = response.data.logo;
         });
-        
+       
+        // Updates the clock every second
+        setInterval(() => {
+            this.currentTime = moment().format('LTS');
+        }, 1 * 1000);
+
+        // update the current date
+        this.currentDate = moment().format('LL');
+
+        // test
         setInterval(() => {
             let n = this.num++
 
@@ -131,23 +131,12 @@ const vm = new Vue({
             axios.post(`http://192.168.0.13:3030/`, params, this.config).then(response => {
                 console.log(this.num);
             })
-            
-        }, 2 * 10000);
-          
-        this.currentTime = moment().format('LTS');
-        this.currentDate = moment().format('LL');
-        setInterval(() => {
-            this.updateCurrentTime()
-        }, 1 * 1000);
+        }, 6 * 10000);
     }
 });
 
 socket.on('emitMessage', message => {
-    const data = message;
-
-    vm.showCallUser(data);
-    vm.voiceCallUser(data);
-    vm.listLastCalls(data);
+    vm.showCallUser(message);
 });
 
 
