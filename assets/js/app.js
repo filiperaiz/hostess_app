@@ -131,7 +131,7 @@ const vm = new Vue({
             axios.post(`http://192.168.0.13:3030/`, params, this.config).then(response => {
                 console.log(this.num);
             })
-        }, 6 * 10000);
+        }, 2 * 10000);
     }
 });
 

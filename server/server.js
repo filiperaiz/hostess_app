@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const socketio = require('socket.io');
 
+const app = express();
 const httpServer = http.Server(app);
 const io = socketio(httpServer);
 
@@ -11,7 +12,6 @@ const ip = require('ip');
 const address = ip.address();
 const httpPort = 3030;
 
-const app = express();
 
 app.use(express.static(path.join(__dirname, '/assets/')));
 app.use(bodyParser.json());

@@ -1,8 +1,11 @@
-const { app, BrowserWindow} = require('electron');
+const { app, BrowserWindow, nativeImage} = require('electron');
 const path = require('path')
-let win = null;
 
-const createWindow = () => {
+let demoIcon = nativeImage.createFromPath(path.join(__dirname,'assets','icons', 'png','512x512.png'))
+
+let win;
+
+app.on('ready', () => {
 	// Create the browser window.
 	win = new BrowserWindow({
 		width: 1920,
@@ -10,7 +13,7 @@ const createWindow = () => {
         fullscreen: false,
         backgroundColor: '#369f93',
         transparent: false,
-        icon: path.join(__dirname, '/assets/icons/mac/icon.icns')
+        icon: demoIcon
 	});
 
 	// and load the index.html of the app.
@@ -26,13 +29,9 @@ const createWindow = () => {
 	win.on('closed', function() {
 		win = null;
 	});
-};
-
-const closedWindow = () => {
+});
+app.on('window-all-closed', () => {
 	if (process.platform != 'darwin') {
 		app.quit();
 	}
-};
-
-app.on('ready', createWindow);
-app.on('window-all-closed', closedWindow);
+});
