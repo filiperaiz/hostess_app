@@ -24,10 +24,11 @@ const vm = new Vue({
 		voiceVolume: 0.1, // Entre [0 - 1], defaults to 1
 
 		fakeApi: [],
-		fakeApiActive: true,
-		fakeApiTime: 3 * 10000,
+		fakeApiActive: false,
+		fakeApiTime: 1 * 10000,
 		fakeApiCount: 0,
-		fakeApiCountLimit: 50
+        fakeApiCountLimit: 50,
+        fakeSetInterval: null,
 	},
 
 	computed: {
@@ -72,7 +73,7 @@ const vm = new Vue({
 
 				speech.onend = function(event) {
 					console.log('Speech has finished');
-					self.hideCallUser(event.elapsedTime / 3);
+					self.hideCallUser(event.elapsedTime / 4);
 				};
 			}
 		},
@@ -106,31 +107,14 @@ const vm = new Vue({
 			if (this.lastCalledList.length > 0) {
 				return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow();
 			}
-		}
-	},
-
-	created: function() {
-		// get information hospital
-		axios.get(this.pathUrl, this.config).then(response => {
-			this.hospital.name = response.data.name;
-			this.hospital.logo = response.data.logo;
-		});
-
-		// Updates the clock every second
-		setInterval(() => {
-			this.currentTime = moment().format('LTS');
-		}, 1 * 1000);
-
-		// update the current date
-		this.currentDate = moment().format('LL');
-
-		// Fake api generator call users
-		if (this.fakeApiActive) {
+        },
+        
+        getfakeApi () {
 			axios.get(`https://randomuser.me/api/?results=${this.fakeApiCountLimit}&inc=name,picture&nat=BR`).then(response => {
                 this.fakeApi = response.data.results;
             });
 
-			setInterval(() => {
+			this.fakeSetInterval = setInterval(() => {
 				if (this.fakeApiCount === this.fakeApiCountLimit) {
 					this.fakeApiCount = 0;
 				}
@@ -147,7 +131,33 @@ const vm = new Vue({
 
 				axios.post(`http://192.168.0.13:3030/`, params, this.config);
 			}, this.fakeApiTime);
-		}
+        },
+        
+        clickFakeApi() {
+            this.fakeApiActive = !this.fakeApiActive
+
+            let msg = this.fakeApiActive ? 'Fake Api Ativada' : 'Fake Api Desativada'
+
+            this.fakeApiActive ? this.getfakeApi() : clearInterval(this.fakeSetInterval)
+            
+            alert(msg);
+        }
+	},
+
+	created: function() {
+		// get information hospital
+		axios.get(this.pathUrl, this.config).then(response => {
+			this.hospital.name = response.data.name;
+			this.hospital.logo = response.data.logo;
+		});
+
+		// Updates the clock every second
+		setInterval(() => {
+			this.currentTime = moment().format('LTS');
+		}, 1 * 1000);
+
+		// update the current date
+		this.currentDate = moment().format('LL');
 	}
 });
 

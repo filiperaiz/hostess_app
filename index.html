@@ -22,7 +22,7 @@
 					<div class="row justify-content-md-center">
 						<div class="col">
 							<div class="infos">
-								<img class="logo" :src="hospital.logo" alt="" />
+								<img v-on:click="clickFakeApi" class="logo" :src="hospital.logo" alt="" />
 								<h1 class="name">
 									Seja bem vindo ao <br />{{ hospital.name }}
 								</h1>
