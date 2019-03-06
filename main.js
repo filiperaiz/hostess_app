@@ -8,8 +8,8 @@ let win;
 app.on('ready', () => {
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 1920,
-        height: 1080,
+		width: 1366,
+        height: 768,
         fullscreen: false,
         backgroundColor: '#369f93',
         transparent: false,

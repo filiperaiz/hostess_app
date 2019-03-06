@@ -18,6 +18,7 @@ const vm = new Vue({
         currentTime: null,
         currentDate: null,
         num: 0,
+        fakeApi: [],
         copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
     },
 
@@ -39,7 +40,7 @@ const vm = new Vue({
             this.voiceCallUser(itemCall)
         },
 
-        voiceCallUser(itemCall) {
+        async voiceCallUser(itemCall) {
             let treatment = itemCall.treatment || '';
 
             treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
@@ -48,21 +49,23 @@ const vm = new Vue({
 
             voiceMessage = voiceMessage.replace(/  +/g, ' ');
             
+            this.listLastCalls(itemCall)
+            
             const self = this
 
             if ('speechSynthesis' in window) {
+                const synth = window.speechSynthesis;
                 const speech = new SpeechSynthesisUtterance();
+
                 speech.lang = 'pt-BR';
                 speech.rate = 0.8;
-                speech.volume = 0;
+                speech.volume = 1;
                 speech.text = voiceMessage;
-                
-                speechSynthesis.speak(speech);
+                await synth.speak(speech);
 
                 speech.onend = function(event) {
-                    console.log('Speech has finished after ' + event.elapsedTime + ' milliseconds.');
-                    self.listLastCalls(itemCall)
-                    self.hideCallUser(event.elapsedTime)
+                    console.log('Speech has finished');
+                    self.hideCallUser(event.elapsedTime / 3)
                 }
               }
         },
@@ -74,6 +77,11 @@ const vm = new Vue({
 
             if (this.lastCalledList.length > 0) {
                 for (let element of this.lastCalledList) {
+                    if (element.name === item.name ) {
+                        console.log(`Element: ${element.name} === Item: ${item.name}`);
+                        console.log(`Element: ${element.destination} === Item: ${item.destination}`);
+                    }
+                    
                     if (element.name === item.name && element.destination === item.destination) {
                         addItem = false
                         break
@@ -105,7 +113,7 @@ const vm = new Vue({
             this.hospital.name = response.data.name;
             this.hospital.logo = response.data.logo;
         });
-       
+        
         // Updates the clock every second
         setInterval(() => {
             this.currentTime = moment().format('LTS');
@@ -114,24 +122,29 @@ const vm = new Vue({
         // update the current date
         this.currentDate = moment().format('LL');
 
-        // test
+        // Fake api generator call users
+        axios.get(`https://randomuser.me/api/?results=100&inc=name,picture&nat=BR`).then(response => {
+            this.fakeApi = response.data.results
+        });
+
         setInterval(() => {
-            let n = this.num++
-
-            // if (this.num === 5) {
-            //     this.num = 0
-            // }
-
-            let params ={
-                name: `Filipe Raiz ${n + 1}`,
-                destination: `Guichê ${n + 1}`,
-                photo: "https://placeimg.com/400/400/any"
+            if (this.num === 10) {
+                this.num = 0
             }
 
-            axios.post(`http://192.168.0.13:3030/`, params, this.config).then(response => {
-                console.log(this.num);
-            })
-        }, 2 * 10000);
+            let n = this.num++
+          
+            let name = `${this.fakeApi[n].name.first} ${this.fakeApi[n].name.last}`
+            let photo = `${this.fakeApi[n].picture.large}`
+
+            let params ={
+                name: name,
+                destination: `Guichê ${n + 1}`,
+                photo: photo
+            }
+
+            axios.post(`http://192.168.0.13:3030/`, params, this.config)
+        }, 1 * 10000);
     }
 });
 

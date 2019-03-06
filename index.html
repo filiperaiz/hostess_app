@@ -12,7 +12,7 @@
         <!-- Vue Js -->
 		<script src="./assets/js/vue.js"></script>
 
-		<title>Hostess Monitor</title>
+		<title>Hostess Painel</title>
 	</head>
     
     <body>
@@ -27,7 +27,7 @@
 									Seja bem vindo ao <br />{{ hospital.name }}
 								</h1>
 								<h2 class="current-time">{{ currentTime }}</h2>
-								<h2 class="current-date">{{ currentDate }}</h2>
+								<h3 class="current-date">{{ currentDate }}</h3>
 							</div>
 						</div>
 					</div>
@@ -63,7 +63,8 @@
 									/>
 								</div>
 								<div class="card-body">
-									<h5 class="name">{{ item.name }}</h5>
+									<h5 v-if="item.name.length < 25" class="name">{{ item.name }}</h5>
+									<h5 v-if="item.name.length>= 25" class="name">{{ item.name.substring(0,25)+".." }}</h5>
 									<p class="destination">
 										{{ item.destination }}
 									</p>
