@@ -7,11 +7,9 @@ moment.locale('pt-br');
 const vm = new Vue({
 	el: '#app',
 	data: {
-		pathUrl:
-			'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',  
-		config: {
-			headers: { 'Content-Type': 'application/json' }
-		},
+		pathUrl:'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',  
+        config: {headers: { 'Content-Type': 'application/json' }},
+        
 		hospital: {},
 		user: {},
 		lastCalledList: [],
@@ -27,9 +25,9 @@ const vm = new Vue({
 
 		fakeApi: [],
 		fakeApiActive: true,
-		fakeApiTime: 1 * 10000,
+		fakeApiTime: 3 * 10000,
 		fakeApiCount: 0,
-		fakeApiCountLimit: 25
+		fakeApiCountLimit: 50
 	},
 
 	computed: {
@@ -53,9 +51,7 @@ const vm = new Vue({
 
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-			let voiceMessage = `${treatment} ${
-				itemCall.name
-			}, por favor, dirija-se ao ${itemCall.destination}.`;
+			let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
@@ -82,27 +78,13 @@ const vm = new Vue({
 		},
 
 		listLastCalls(item) {
-			let addItem = true;
-
 			item.time = moment().format('YYYYMMDD, h:mm:ss a');
+            
+            let addItem = true;
 
 			if (this.lastCalledList.length > 0) {
 				for (let element of this.lastCalledList) {
-					if (element.name === item.name) {
-						console.log(
-							`Element: ${element.name} === Item: ${item.name}`
-						);
-						console.log(
-							`Element: ${element.destination} === Item: ${
-								item.destination
-							}`
-						);
-					}
-
-					if (
-						element.name === item.name &&
-						element.destination === item.destination
-					) {
+					if (element.name === item.name && element.destination === item.destination) {
 						addItem = false;
 						break;
 					}
@@ -144,15 +126,9 @@ const vm = new Vue({
 
 		// Fake api generator call users
 		if (this.fakeApiActive) {
-			axios
-				.get(
-					`https://randomuser.me/api/?results=${
-						this.fakeApiCountLimit
-					}&inc=name,picture&nat=BR`
-				)
-				.then(response => {
-					this.fakeApi = response.data.results;
-				});
+			axios.get(`https://randomuser.me/api/?results=${this.fakeApiCountLimit}&inc=name,picture&nat=BR`).then(response => {
+                this.fakeApi = response.data.results;
+            });
 
 			setInterval(() => {
 				if (this.fakeApiCount === this.fakeApiCountLimit) {
@@ -160,10 +136,7 @@ const vm = new Vue({
 				}
 
 				let idx = this.fakeApiCount++;
-
-				let name = `${this.fakeApi[idx].name.first} ${
-					this.fakeApi[idx].name.last
-				}`;
+				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
 				let params = {

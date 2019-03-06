@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "all": "electron-packager ./ 'Hostess Panel' --platform=all",
-    "app": "electron-packager ./ 'Hostess Panel'",
+    "all": "electron-packager ./ 'Hostess Panel' --platform=all --icon=assets/icons/1024x1024.png",
+    "app": "electron-packager ./ 'Hostess Panel' --icon=assets/icons/1024x1024.png",
     "start": "electron .",
     "server": "server.js",
     "reload": "live-reload ./ --port 35729"

@@ -144,7 +144,7 @@ body {
 }
 
 .last-calls .box-card .card-photo .photo {
-	width: 100%;
+	width: 150px;
 	height: 150px;
     display: block;
     background-image: url(../img/avatar.png);
