@@ -2,154 +2,182 @@ const axios = require('axios');
 const socket = io.connect('http://localhost:3030/');
 const moment = require('moment');
 
-moment.locale('pt-br')
+moment.locale('pt-br');
 
 const vm = new Vue({
-    el: '#app',
-    data: {
-        pathUrl: 'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
-        config: {
-            headers: { 'Content-Type': 'application/json' }
-        },
-        hospital: {},
-        user: {},
-        lastCalledList: [],
-        callUser: false,
-        currentTime: null,
-        currentDate: null,
-        num: 0,
-        fakeApi: [],
-        copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
-    },
+	el: '#app',
+	data: {
+		pathUrl:
+			'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',  
+		config: {
+			headers: { 'Content-Type': 'application/json' }
+		},
+		hospital: {},
+		user: {},
+		lastCalledList: [],
+		callUser: false,
+		currentTime: null,
+		currentDate: null,
+		copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
 
-    computed: {
-        lastCalls: function () {
-            return this.lastCalledList.slice(0, 4);
-        }      
-    },
+        voiceLang: 'pt-BR',  
+        voicePitch: 1.2, // Entre [0 - 2], defaults to 1
+		voiceRate: 0.8, // Entre [0.1 - 10], defaults to 1
+		voiceVolume: 0.1, // Entre [0 - 1], defaults to 1
 
-    methods: {
-        showCallUser(itemCall) {
-            this.user = {};
-            this.user.photo = itemCall.photo;
-            this.user.name = itemCall.name;
-            this.user.destination = itemCall.destination;
+		fakeApi: [],
+		fakeApiActive: true,
+		fakeApiTime: 1 * 10000,
+		fakeApiCount: 0,
+		fakeApiCountLimit: 25
+	},
 
-            this.callUser = true;
+	computed: {
+		lastCalls: function() {
+			return this.lastCalledList.slice(0, 4);
+		}
+	},
 
-            this.voiceCallUser(itemCall)
-        },
+	methods: {
+		showCallUser(itemCall) {
+			this.user = {};
+			this.user = itemCall;
 
-        async voiceCallUser(itemCall) {
-            let treatment = itemCall.treatment || '';
+			this.callUser = true;
 
-            treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
+			this.voiceCallUser(itemCall);
+		},
 
-            let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
+		async voiceCallUser(itemCall) {
+			let treatment = itemCall.treatment || '';
 
-            voiceMessage = voiceMessage.replace(/  +/g, ' ');
-            
-            this.listLastCalls(itemCall)
-            
-            const self = this
+			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-            if ('speechSynthesis' in window) {
-                const synth = window.speechSynthesis;
-                const speech = new SpeechSynthesisUtterance();
+			let voiceMessage = `${treatment} ${
+				itemCall.name
+			}, por favor, dirija-se ao ${itemCall.destination}.`;
 
-                speech.lang = 'pt-BR';
-                speech.rate = 0.8;
-                speech.volume = 1;
-                speech.text = voiceMessage;
-                await synth.speak(speech);
+			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
-                speech.onend = function(event) {
-                    console.log('Speech has finished');
-                    self.hideCallUser(event.elapsedTime / 3)
-                }
-              }
-        },
+			this.listLastCalls(itemCall);
 
-        listLastCalls(item) {
-            let addItem = true;
+			const self = this;
 
-            item.time = moment().format('YYYYMMDD, h:mm:ss a')
+			if ('speechSynthesis' in window) {
+				const synth = window.speechSynthesis;
+				const speech = new SpeechSynthesisUtterance();
 
-            if (this.lastCalledList.length > 0) {
-                for (let element of this.lastCalledList) {
-                    if (element.name === item.name ) {
-                        console.log(`Element: ${element.name} === Item: ${item.name}`);
-                        console.log(`Element: ${element.destination} === Item: ${item.destination}`);
-                    }
-                    
-                    if (element.name === item.name && element.destination === item.destination) {
-                        addItem = false
-                        break
-                    }
-                }
-            }
+				speech.lang = self.voiceLang;
+				speech.pitch = self.voicePitch;
+				speech.rate = self.voiceRate;
+				speech.volume = self.voiceVolume;
+				speech.text = voiceMessage;
+				await synth.speak(speech);
 
-            if (addItem) {
-                this.lastCalledList = [item].concat(this.lastCalledList);
-            }
-        },
+				speech.onend = function(event) {
+					console.log('Speech has finished');
+					self.hideCallUser(event.elapsedTime / 3);
+				};
+			}
+		},
 
-        hideCallUser(time) {
-            setTimeout(() => {
-                this.callUser = false;
-            }, time);
-        },
+		listLastCalls(item) {
+			let addItem = true;
 
-        updateLastCall(time) {
-            if (this.lastCalledList.length > 0) {
-                return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow()
-            }
-        },
-    },
+			item.time = moment().format('YYYYMMDD, h:mm:ss a');
 
-    created: function () {
-        // get information hospital
-        axios.get(this.pathUrl, this.config).then(response => {
-            this.hospital.name = response.data.name;
-            this.hospital.logo = response.data.logo;
-        });
-        
-        // Updates the clock every second
-        setInterval(() => {
-            this.currentTime = moment().format('LTS');
-        }, 1 * 1000);
+			if (this.lastCalledList.length > 0) {
+				for (let element of this.lastCalledList) {
+					if (element.name === item.name) {
+						console.log(
+							`Element: ${element.name} === Item: ${item.name}`
+						);
+						console.log(
+							`Element: ${element.destination} === Item: ${
+								item.destination
+							}`
+						);
+					}
 
-        // update the current date
-        this.currentDate = moment().format('LL');
+					if (
+						element.name === item.name &&
+						element.destination === item.destination
+					) {
+						addItem = false;
+						break;
+					}
+				}
+			}
 
-        // Fake api generator call users
-        axios.get(`https://randomuser.me/api/?results=100&inc=name,picture&nat=BR`).then(response => {
-            this.fakeApi = response.data.results
-        });
+			if (addItem) {
+				this.lastCalledList = [item].concat(this.lastCalledList);
+			}
+		},
 
-        setInterval(() => {
-            if (this.num === 10) {
-                this.num = 0
-            }
+		hideCallUser(time) {
+			setTimeout(() => {
+				this.callUser = false;
+			}, time);
+		},
 
-            let n = this.num++
-          
-            let name = `${this.fakeApi[n].name.first} ${this.fakeApi[n].name.last}`
-            let photo = `${this.fakeApi[n].picture.large}`
+		updateLastCall(time) {
+			if (this.lastCalledList.length > 0) {
+				return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow();
+			}
+		}
+	},
 
-            let params ={
-                name: name,
-                destination: `Guichê ${n + 1}`,
-                photo: photo
-            }
+	created: function() {
+		// get information hospital
+		axios.get(this.pathUrl, this.config).then(response => {
+			this.hospital.name = response.data.name;
+			this.hospital.logo = response.data.logo;
+		});
 
-            axios.post(`http://192.168.0.13:3030/`, params, this.config)
-        }, 1 * 10000);
-    }
+		// Updates the clock every second
+		setInterval(() => {
+			this.currentTime = moment().format('LTS');
+		}, 1 * 1000);
+
+		// update the current date
+		this.currentDate = moment().format('LL');
+
+		// Fake api generator call users
+		if (this.fakeApiActive) {
+			axios
+				.get(
+					`https://randomuser.me/api/?results=${
+						this.fakeApiCountLimit
+					}&inc=name,picture&nat=BR`
+				)
+				.then(response => {
+					this.fakeApi = response.data.results;
+				});
+
+			setInterval(() => {
+				if (this.fakeApiCount === this.fakeApiCountLimit) {
+					this.fakeApiCount = 0;
+				}
+
+				let idx = this.fakeApiCount++;
+
+				let name = `${this.fakeApi[idx].name.first} ${
+					this.fakeApi[idx].name.last
+				}`;
+				let photo = `${this.fakeApi[idx].picture.large}`;
+
+				let params = {
+					name: name,
+					destination: `Guichê ${idx + 1}`,
+					photo: photo
+				};
+
+				axios.post(`http://192.168.0.13:3030/`, params, this.config);
+			}, this.fakeApiTime);
+		}
+	}
 });
 
 socket.on('emitMessage', message => {
-    vm.showCallUser(message);
+	vm.showCallUser(message);
 });
-
-
