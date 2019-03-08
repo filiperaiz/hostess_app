@@ -7,9 +7,10 @@ moment.locale('pt-br');
 const vm = new Vue({
 	el: '#app',
 	data: {
-		pathUrl:'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',  
-        config: {headers: { 'Content-Type': 'application/json' }},
-        
+		pathUrl:
+			'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
+		config: { headers: { 'Content-Type': 'application/json' } },
+
 		hospital: {},
 		user: {},
 		lastCalledList: [],
@@ -18,8 +19,8 @@ const vm = new Vue({
 		currentDate: null,
 		copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
 
-        voiceLang: 'pt-BR',  
-        voicePitch: 1.2, // Entre [0 - 2], defaults to 1
+		voiceLang: 'pt-BR',
+		voicePitch: 1.2, // Entre [0 - 2], defaults to 1
 		voiceRate: 0.8, // Entre [0.1 - 10], defaults to 1
 		voiceVolume: 0.1, // Entre [0 - 1], defaults to 1
 
@@ -27,8 +28,8 @@ const vm = new Vue({
 		fakeApiActive: false,
 		fakeApiTime: 1 * 10000,
 		fakeApiCount: 0,
-        fakeApiCountLimit: 50,
-        fakeSetInterval: null,
+		fakeApiCountLimit: 50,
+		fakeSetInterval: null
 	},
 
 	computed: {
@@ -52,7 +53,9 @@ const vm = new Vue({
 
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-			let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
+			let voiceMessage = `${treatment} ${
+				itemCall.name
+			}, por favor, dirija-se ao ${itemCall.destination}.`;
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
@@ -80,12 +83,15 @@ const vm = new Vue({
 
 		listLastCalls(item) {
 			item.time = moment().format('YYYYMMDD, h:mm:ss a');
-            
-            let addItem = true;
+
+			let addItem = true;
 
 			if (this.lastCalledList.length > 0) {
 				for (let element of this.lastCalledList) {
-					if (element.name === item.name && element.destination === item.destination) {
+					if (
+						element.name === item.name &&
+						element.destination === item.destination
+					) {
 						addItem = false;
 						break;
 					}
@@ -107,12 +113,18 @@ const vm = new Vue({
 			if (this.lastCalledList.length > 0) {
 				return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow();
 			}
-        },
-        
-        getfakeApi () {
-			axios.get(`https://randomuser.me/api/?results=${this.fakeApiCountLimit}&inc=name,picture&nat=BR`).then(response => {
-                this.fakeApi = response.data.results;
-            });
+		},
+
+		getfakeApi() {
+			axios
+				.get(
+					`https://randomuser.me/api/?results=${
+						this.fakeApiCountLimit
+					}&inc=name,picture&nat=BR`
+				)
+				.then(response => {
+					this.fakeApi = response.data.results;
+				});
 
 			this.fakeSetInterval = setInterval(() => {
 				if (this.fakeApiCount === this.fakeApiCountLimit) {
@@ -120,7 +132,9 @@ const vm = new Vue({
 				}
 
 				let idx = this.fakeApiCount++;
-				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+				let name = `${this.fakeApi[idx].name.first} ${
+					this.fakeApi[idx].name.last
+				}`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
 				let params = {
@@ -131,17 +145,21 @@ const vm = new Vue({
 
 				axios.post(`http://192.168.0.13:3030/`, params, this.config);
 			}, this.fakeApiTime);
-        },
-        
-        clickFakeApi() {
-            this.fakeApiActive = !this.fakeApiActive
+		},
 
-            let msg = this.fakeApiActive ? 'Fake Api Ativada' : 'Fake Api Desativada'
+		clickFakeApi() {
+			this.fakeApiActive = !this.fakeApiActive;
 
-            this.fakeApiActive ? this.getfakeApi() : clearInterval(this.fakeSetInterval)
-            
-            alert(msg);
-        }
+			let msg = this.fakeApiActive
+				? 'Fake Api Ativada'
+				: 'Fake Api Desativada';
+
+			this.fakeApiActive
+				? this.getfakeApi()
+				: clearInterval(this.fakeSetInterval);
+
+			alert(msg);
+		}
 	},
 
 	created: function() {

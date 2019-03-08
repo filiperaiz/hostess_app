@@ -12,7 +12,6 @@ const ip = require('ip');
 const address = ip.address();
 const httpPort = 3030;
 
-
 app.use(express.static(path.join(__dirname, '/assets/')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
