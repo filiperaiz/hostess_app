@@ -29,7 +29,7 @@ npm install gulp-cli -g
 
 3. Clone ou faça download do projeto;
 ```
-git clone -b develop git@gitlab.com:cooksonmacedo/hostess-monitor-panel.git
+git clone https://github.com/filiperaiz/hostess_app.git
 ```
 
 4. Execute o Node na pasta do projeto
