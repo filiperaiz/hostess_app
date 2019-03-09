@@ -3,29 +3,27 @@
 	<head>
 		<!-- Required meta tags -->
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 		<!-- Bootstrap CSS -->
 		<link href="./assets/css/bootstrap.css" rel="stylesheet" />
 		<link href="./assets/css/main.css" rel="stylesheet" />
-		
-        <!-- Vue Js -->
+
+		<!-- Vue Js -->
 		<script src="./assets/js/vue.js"></script>
 
 		<title>Hostess Painel</title>
 	</head>
-    
-    <body>
+
+	<body>
 		<div id="app">
 			<section v-show="!callUser" class="welcome">
 				<div class="container">
 					<div class="row justify-content-md-center">
 						<div class="col">
 							<div class="infos">
-								<img v-on:click="clickFakeApi" class="logo" :src="hospital.logo" alt="" />
-								<h1 class="name">
-									Seja bem vindo ao <br />{{ hospital.name }}
-								</h1>
+								<img class="logo" :src="hospital.logo" alt="" />
+								<h1 class="name">Seja bem vindo ao <br />{{ hospital.name }}</h1>
 								<h2 class="current-time">{{ currentTime }}</h2>
 								<h3 class="current-date">{{ currentDate }}</h3>
 							</div>
@@ -56,19 +54,17 @@
 						<div class="col-3" v-for="item in lastCalls">
 							<div class="box-card clearfix">
 								<div class="card-photo">
-									<img
-										class="photo"
-										:src="item.photo"
-										alt=""
-									/>
+									<img class="photo" :src="item.photo" alt="" />
 								</div>
 								<div class="card-body">
 									<h5 v-if="item.name.length < 25" class="name">{{ item.name }}</h5>
-									<h5 v-if="item.name.length>= 25" class="name">{{ item.name.substring(0,25)+".." }}</h5>
+									<h5 v-if="item.name.length>= 25" class="name">
+										{{ item.name.substring(0, 25) + '..' }}
+									</h5>
 									<p class="destination">
 										{{ item.destination }}
 									</p>
-									<p class="time">{{ updateLastCall(item.time) }}</p>
+									<p class="time">{{ updateTimeAgo(item.time) }}</p>
 								</div>
 							</div>
 						</div>
@@ -78,15 +74,63 @@
 
 			<footer>
 				<p>{{ copyright }}</p>
+				<img @click="countSettings" :src="logoHostess" alt="" />
 			</footer>
+
+			<div v-if="showModal">
+				<div class="modal-mask">
+					<div class="modal-wrapper">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">Ajustes</h4>
+									<button type="button" class="close" @click="showModal=false">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<label for="ip">(ip e porta)</label>
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="basic-addon3">Url</span>
+										</div>
+										<input v-model="urlIp" type="text" class="form-control" readonly id="ip" aria-describedby="ip" />
+									</div>
+
+									<hr />
+
+									<label for="basic-url">Digite a url para buscar dados do cliente</label>
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="basic-addon3">Url</span>
+										</div>
+										<input v-model="endpoint" type="text" class="form-control" id="basic-url" aria-describedby="endpoint" />
+									</div>
+
+									<hr />
+
+									<div class="custom-control custom-checkbox">
+										<input v-model="fakeApiActive" type="checkbox" class="custom-control-input" id="fakeApiActive" />
+										<label class="custom-control-label" for="fakeApiActive">Ativar fake api de chamadas?</label>
+									</div>
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-danger" @click="showModal=false">Cancelar</button>
+									<button type="button" class="btn btn-success" @click="getSettings">Salvar</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<!-- JavaScript -->
 		<script src="http://localhost:35729/livereload.js"></script>
-		<script src="./assets/js/jquery.js"	onload="window.$ = window.jQuery = module.exports;"
-		></script>
-        <script src="./assets/js/popper.js"></script>
-        <script src="./assets/js/bootstrap.js"></script>
+		<script src="./assets/js/jquery.js" onload="window.$ = window.jQuery = module.exports;"></script>
+		<script src="./assets/js/popper.js"></script>
+		<script src="./assets/js/bootstrap.js"></script>
 		<script src="./assets/js/socket.js"></script>
 		<script src="./assets/js/app.js"></script>
 	</body>

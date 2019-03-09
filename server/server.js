@@ -9,8 +9,9 @@ const httpServer = http.Server(app);
 const io = socketio(httpServer);
 
 const ip = require('ip');
-const address = ip.address();
-const httpPort = 3030;
+const config = {};
+config.ip = ip.address();
+config.port = 3030;
 
 app.use(express.static(path.join(__dirname, '/assets/')));
 app.use(bodyParser.json());
@@ -29,6 +30,6 @@ app.post('/', (request, response) => {
 	console.log('\n' + JSON.stringify(request.body));
 });
 
-httpServer.listen(httpPort, () => {
-	console.log(`> HTTP Server is running on: ${address}:${httpPort}`);
+httpServer.listen(config.port, () => {
+	console.log(`> HTTP Server is running on: ${config.ip}:${config.port}`);
 });

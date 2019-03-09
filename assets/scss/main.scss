@@ -186,4 +186,25 @@ footer {
 		font-weight: bold;
 		margin: 0;
 	}
+
+	img {
+		width: 60px;
+	}
+}
+
+.modal-mask {
+	background-color: rgba(0, 0, 0, 0.5);
+	display: table;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	top: 0;
+	transition: opacity 0.3s ease;
+	width: 100%;
+	z-index: 9998;
+}
+
+.modal-wrapper {
+	display: table-cell;
+	vertical-align: middle;
 }

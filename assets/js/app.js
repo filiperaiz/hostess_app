@@ -1,16 +1,20 @@
 const axios = require('axios');
 const socket = io.connect('http://localhost:3030/');
 const moment = require('moment');
+const synth = window.speechSynthesis;
+
+const ip = require('ip');
+const config = {};
+config.ip = ip.address();
+config.port = 3030;
 
 moment.locale('pt-br');
 
 const vm = new Vue({
 	el: '#app',
 	data: {
-		pathUrl:
-			'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
+		pathUrl: 'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
 		config: { headers: { 'Content-Type': 'application/json' } },
-
 		hospital: {},
 		user: {},
 		lastCalledList: [],
@@ -18,6 +22,11 @@ const vm = new Vue({
 		currentTime: null,
 		currentDate: null,
 		copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
+		logoHostess: 'assets/img/logo-horizonatal-white.png',
+		openModal: 0,
+		showModal: false,
+		endpoint: '',
+		urlIp: `http://${config.ip}:${config.port}/`,
 
 		voiceLang: 'pt-BR',
 		voicePitch: 1.2, // Entre [0 - 2], defaults to 1
@@ -53,9 +62,7 @@ const vm = new Vue({
 
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-			let voiceMessage = `${treatment} ${
-				itemCall.name
-			}, por favor, dirija-se ao ${itemCall.destination}.`;
+			let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
@@ -64,7 +71,6 @@ const vm = new Vue({
 			const self = this;
 
 			if ('speechSynthesis' in window) {
-				const synth = window.speechSynthesis;
 				const speech = new SpeechSynthesisUtterance();
 
 				speech.lang = self.voiceLang;
@@ -88,10 +94,7 @@ const vm = new Vue({
 
 			if (this.lastCalledList.length > 0) {
 				for (let element of this.lastCalledList) {
-					if (
-						element.name === item.name &&
-						element.destination === item.destination
-					) {
+					if (element.name === item.name && element.destination === item.destination) {
 						addItem = false;
 						break;
 					}
@@ -109,22 +112,61 @@ const vm = new Vue({
 			}, time);
 		},
 
-		updateLastCall(time) {
+		updateTimeAgo(time) {
 			if (this.lastCalledList.length > 0) {
 				return moment(time, 'YYYYMMDD, hh:mm:ss a').fromNow();
 			}
 		},
 
-		getfakeApi() {
+		countSettings() {
+			this.openModal++;
+
+			if (this.openModal == 10) {
+				this.showModal = true;
+				this.openModal = 0;
+
+				if (localStorage.getItem('endpoint')) {
+					this.endpoint = localStorage.getItem('endpoint');
+				}
+			}
+		},
+
+		getSettings() {
+			if (!localStorage.getItem('endpoint') && this.endpoint !== '') {
+				this.getInfoClient(this.endpoint);
+			}
+
+			this.fakeApiActive ? this.getFakeApi() : this.stopFakeApi();
+
+			this.showModal = false;
+		},
+
+		getInfoClient(endpoint) {
 			axios
-				.get(
-					`https://randomuser.me/api/?results=${
-						this.fakeApiCountLimit
-					}&inc=name,picture&nat=BR`
-				)
+				.get(endpoint, this.config)
 				.then(response => {
-					this.fakeApi = response.data.results;
+					this.hospital.name = response.data.name;
+					this.hospital.logo = response.data.logo;
+
+					localStorage.setItem('endpoint', this.endpoint);
+					localStorage.setItem('infoClient', JSON.stringify(response.data));
+				})
+				.catch(error => {
+					this.endpoint = null;
+					alert('Url invalida');
 				});
+		},
+
+		getInfoClientStorage() {
+			let infoClient = JSON.parse(localStorage.getItem('infoClient'));
+			this.hospital.name = infoClient.name;
+			this.hospital.logo = infoClient.logo;
+		},
+
+		getFakeApi() {
+			axios.get(`https://randomuser.me/api/?results=${this.fakeApiCountLimit}&inc=name,picture&nat=BR`).then(response => {
+				this.fakeApi = response.data.results;
+			});
 
 			this.fakeSetInterval = setInterval(() => {
 				if (this.fakeApiCount === this.fakeApiCountLimit) {
@@ -132,9 +174,7 @@ const vm = new Vue({
 				}
 
 				let idx = this.fakeApiCount++;
-				let name = `${this.fakeApi[idx].name.first} ${
-					this.fakeApi[idx].name.last
-				}`;
+				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
 				let params = {
@@ -143,39 +183,33 @@ const vm = new Vue({
 					photo: photo
 				};
 
-				axios.post(`http://192.168.0.13:3030/`, params, this.config);
+				axios.post(this.urlIp, params, this.config);
 			}, this.fakeApiTime);
 		},
 
-		clickFakeApi() {
-			this.fakeApiActive = !this.fakeApiActive;
+		stopFakeApi() {
+			synth.cancel();
+			clearInterval(this.fakeSetInterval);
+			this.hideCallUser(0);
+			this.lastCalledList = [];
+		},
 
-			let msg = this.fakeApiActive
-				? 'Fake Api Ativada'
-				: 'Fake Api Desativada';
+		getDateHour() {
+			setInterval(() => {
+				this.currentTime = moment().format('LTS');
+			}, 1 * 1000);
 
-			this.fakeApiActive
-				? this.getfakeApi()
-				: clearInterval(this.fakeSetInterval);
-
-			alert(msg);
+			this.currentDate = moment().format('LL');
 		}
 	},
 
 	created: function() {
-		// get information hospital
-		axios.get(this.pathUrl, this.config).then(response => {
-			this.hospital.name = response.data.name;
-			this.hospital.logo = response.data.logo;
-		});
+		this.showModal = false;
+		this.getDateHour();
 
-		// Updates the clock every second
-		setInterval(() => {
-			this.currentTime = moment().format('LTS');
-		}, 1 * 1000);
-
-		// update the current date
-		this.currentDate = moment().format('LL');
+		if (localStorage.getItem('endpoint')) {
+			this.getInfoClientStorage();
+		}
 	}
 });
 
