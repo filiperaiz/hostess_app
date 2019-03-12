@@ -7,8 +7,6 @@ app.on('ready', () => {
 	win = new BrowserWindow({
 		width: 1366,
 		height: 768,
-		minWidth: 1366,
-		minHeight: 768,
 		fullscreen: false,
 		backgroundColor: '#369f93',
 		transparent: false

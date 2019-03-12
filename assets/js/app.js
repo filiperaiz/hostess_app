@@ -1,7 +1,6 @@
 const axios = require('axios');
 const socket = io.connect('http://localhost:3030/');
 const moment = require('moment');
-const synth = window.speechSynthesis;
 
 const ip = require('ip');
 const config = {};
@@ -28,10 +27,9 @@ const vm = new Vue({
 		endpoint: '',
 		urlIp: `http://${config.ip}:${config.port}/`,
 
-		voiceLang: 'pt-BR',
 		voicePitch: 1.2, // Entre [0 - 2], defaults to 1
 		voiceRate: 0.8, // Entre [0.1 - 10], defaults to 1
-		voiceVolume: 0.1, // Entre [0 - 1], defaults to 1
+		voiceVolume: 10, // Entre [0 - 10], defaults to 10
 
 		fakeApi: [],
 		fakeApiActive: false,
@@ -57,7 +55,7 @@ const vm = new Vue({
 			this.voiceCallUser(itemCall);
 		},
 
-		async voiceCallUser(itemCall) {
+		voiceCallUser(itemCall) {
 			let treatment = itemCall.treatment || '';
 
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
@@ -71,19 +69,21 @@ const vm = new Vue({
 			const self = this;
 
 			if ('speechSynthesis' in window) {
-				const speech = new SpeechSynthesisUtterance();
+				const msg = new SpeechSynthesisUtterance();
+				const voices = window.speechSynthesis.getVoices();
 
-				speech.lang = self.voiceLang;
-				speech.pitch = self.voicePitch;
-				speech.rate = self.voiceRate;
-				speech.volume = self.voiceVolume;
-				speech.text = voiceMessage;
-				await synth.speak(speech);
+				msg.voice = voices[0];
+				msg.rate = self.voiceRate;
+				msg.pitch = self.voicePitch;
+				msg.volume = self.voiceVolume / 10;
+				msg.text = voiceMessage;
 
-				speech.onend = function(event) {
+				msg.onend = function(event) {
 					console.log('Speech has finished');
 					self.hideCallUser(event.elapsedTime / 4);
 				};
+
+				speechSynthesis.speak(msg);
 			}
 		},
 
@@ -121,7 +121,7 @@ const vm = new Vue({
 		countSettings() {
 			this.openModal++;
 
-			if (this.openModal == 10) {
+			if (this.openModal == 5) {
 				this.showModal = true;
 				this.openModal = 0;
 

@@ -182,14 +182,31 @@ footer {
 	width: 100%;
 	p {
 		color: #fff;
+		display: inline-block;
 		font-size: 12px;
 		font-weight: bold;
 		margin: 0;
+		vertical-align: middle;
 	}
 
 	img {
-		width: 60px;
+		display: inline-block;
+		margin-right: 5px;
+		vertical-align: middle;
+		width: 20px;
 	}
+}
+
+.modalfake {
+	display: none;
+}
+
+.modalshow {
+	display: block;
+}
+
+.modalhide {
+	display: none;
 }
 
 .modal-mask {

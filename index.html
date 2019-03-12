@@ -73,11 +73,11 @@
 			</section>
 
 			<footer>
+                <img @click="countSettings" :src="logoHostess" alt="" />
 				<p>{{ copyright }}</p>
-				<img @click="countSettings" :src="logoHostess" alt="" />
 			</footer>
 
-			<div v-if="showModal">
+			<div class="modalfake" :class="showModal ? 'modalshow' : 'modalhide' ">
 				<div class="modal-mask">
 					<div class="modal-wrapper">
 						<div class="modal-dialog">
