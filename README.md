@@ -55,7 +55,7 @@ npm run app
 ```
 
 # Abrir modal de configuração
-1. Para abrir o modal, clique 10x no logo do Hostess que fica logo abaixo do texto de copyrights
+1. Para abrir o modal, clique 5x no logo do Hostess que fica ao lado do texto de copyrights
 - Você vai ver qual o ip e porta da maquina;
 - Você poderá inserir uma url para para buscar informações do hospital; Url de exemplo:
 ```
