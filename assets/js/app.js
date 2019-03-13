@@ -13,23 +13,26 @@ const vm = new Vue({
 	el: '#app',
 	data: {
 		pathUrl: 'https://my-json-server.typicode.com/filiperaiz/pwa_db/hospital/0',
-		config: { headers: { 'Content-Type': 'application/json' } },
+		headers: { headers: { 'Content-Type': 'application/json' } },
 		hospital: {},
 		user: {},
 		lastCalledList: [],
-		callUser: false,
+		calledUser: false,
 		currentTime: null,
 		currentDate: null,
 		copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
 		logoHostess: 'assets/img/logo-horizonatal-white.png',
-		openModal: 0,
 		showModal: false,
 		endpoint: '',
 		urlIp: `http://${config.ip}:${config.port}/`,
 
-		voicePitch: 1.2, // Entre [0 - 2], defaults to 1
-		voiceRate: 0.8, // Entre [0.1 - 10], defaults to 1
-		voiceVolume: 10, // Entre [0 - 10], defaults to 10
+		voiceSpeech: new window.SpeechSynthesisUtterance(),
+		voiceSynth: window.speechSynthesis,
+		voiceList: [],
+		voiceSelected: 0,
+		voicePitch: 12, // De [0 - 20], defaults to 10
+		voiceRate: 8, // De [0 - 10], defaults to 10
+		voiceVolume: 10, // De [0 - 10], defaults to 10
 
 		fakeApi: [],
 		fakeApiActive: false,
@@ -39,6 +42,25 @@ const vm = new Vue({
 		fakeSetInterval: null
 	},
 
+	mounted() {
+		this.voiceList = this.voiceSynth.getVoices();
+
+		if (this.voiceList.length) {
+			console.log(this.voiceList);
+		}
+
+		this.voiceSynth.onvoiceschanged = () => {
+			this.voiceList = this.voiceSynth.getVoices();
+		};
+
+		this.showModal = false;
+		this.getDateHour();
+
+		if (localStorage.getItem('endpoint')) {
+			this.getInfoClientStorage();
+		}
+	},
+
 	computed: {
 		lastCalls: function() {
 			return this.lastCalledList.slice(0, 4);
@@ -46,55 +68,53 @@ const vm = new Vue({
 	},
 
 	methods: {
-		showCallUser(itemCall) {
-			this.user = {};
-			this.user = itemCall;
+		getDateHour() {
+			setInterval(() => {
+				this.currentTime = moment().format('LTS');
+			}, 1 * 1000);
 
-			this.callUser = true;
-
-			this.voiceCallUser(itemCall);
+			this.currentDate = moment().format('LL');
 		},
 
-		voiceCallUser(itemCall) {
-			let treatment = itemCall.treatment || '';
+		getCalledUser(calledUser) {
+			this.user = calledUser;
+			this.voiceCalledUser(calledUser);
+		},
 
+		voiceCalledUser(calledUser) {
+			let treatment = calledUser.treatment || '';
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-			let voiceMessage = `${treatment} ${itemCall.name}, por favor, dirija-se ao ${itemCall.destination}.`;
-
+			let voiceMessage = `${treatment} ${calledUser.name}, por favor, dirija-se ao ${calledUser.destination}.`;
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
-			this.listLastCalls(itemCall);
-
-			const self = this;
-
 			if ('speechSynthesis' in window) {
-				const msg = new SpeechSynthesisUtterance();
-				const voices = window.speechSynthesis.getVoices();
+				this.voiceSpeech.rate = this.voiceRate / 10;
+				this.voiceSpeech.pitch = (this.voicePitch / 20) * 2;
+				this.voiceSpeech.volume = this.voiceVolume / 10;
+				this.voiceSpeech.text = voiceMessage;
+				this.voiceSpeech.voice = this.voiceList[this.voiceSelected];
 
-				msg.voice = voices[0];
-				msg.rate = self.voiceRate;
-				msg.pitch = self.voicePitch;
-				msg.volume = self.voiceVolume / 10;
-				msg.text = voiceMessage;
+				this.voiceSynth.speak(this.voiceSpeech);
 
-				msg.onend = function(event) {
-					console.log('Speech has finished');
-					self.hideCallUser(event.elapsedTime / 4);
+				this.voiceSpeech.onstart = () => {
+					this.listLastCalls(calledUser);
+					this.calledUser = true;
 				};
 
-				speechSynthesis.speak(msg);
+				this.voiceSpeech.onend = () => {
+					this.user = {};
+					this.calledUser = false;
+				};
 			}
 		},
 
-		listLastCalls(item) {
-			item.time = moment().format('YYYYMMDD, h:mm:ss a');
-
+		listLastCalls(calledUser) {
 			let addItem = true;
 
 			if (this.lastCalledList.length > 0) {
 				for (let element of this.lastCalledList) {
-					if (element.name === item.name && element.destination === item.destination) {
+					if (element.name === calledUser.name && element.destination === calledUser.destination) {
 						addItem = false;
 						break;
 					}
@@ -102,14 +122,9 @@ const vm = new Vue({
 			}
 
 			if (addItem) {
-				this.lastCalledList = [item].concat(this.lastCalledList);
+				calledUser.time = moment().format('YYYYMMDD, h:mm:ss a');
+				this.lastCalledList = [calledUser].concat(this.lastCalledList);
 			}
-		},
-
-		hideCallUser(time) {
-			setTimeout(() => {
-				this.callUser = false;
-			}, time);
 		},
 
 		updateTimeAgo(time) {
@@ -118,16 +133,11 @@ const vm = new Vue({
 			}
 		},
 
-		countSettings() {
-			this.openModal++;
+		openModalSettings() {
+			this.showModal = true;
 
-			if (this.openModal == 5) {
-				this.showModal = true;
-				this.openModal = 0;
-
-				if (localStorage.getItem('endpoint')) {
-					this.endpoint = localStorage.getItem('endpoint');
-				}
+			if (localStorage.getItem('endpoint')) {
+				this.endpoint = localStorage.getItem('endpoint');
 			}
 		},
 
@@ -143,7 +153,7 @@ const vm = new Vue({
 
 		getInfoClient(endpoint) {
 			axios
-				.get(endpoint, this.config)
+				.get(endpoint, this.headers)
 				.then(response => {
 					this.hospital.name = response.data.name;
 					this.hospital.logo = response.data.logo;
@@ -183,36 +193,20 @@ const vm = new Vue({
 					photo: photo
 				};
 
-				axios.post(this.urlIp, params, this.config);
+				axios.post(this.urlIp, params, this.headers);
 			}, this.fakeApiTime);
 		},
 
 		stopFakeApi() {
-			synth.cancel();
+			voiceSpeech.cancel();
 			clearInterval(this.fakeSetInterval);
-			this.hideCallUser(0);
+
 			this.lastCalledList = [];
-		},
-
-		getDateHour() {
-			setInterval(() => {
-				this.currentTime = moment().format('LTS');
-			}, 1 * 1000);
-
-			this.currentDate = moment().format('LL');
-		}
-	},
-
-	created: function() {
-		this.showModal = false;
-		this.getDateHour();
-
-		if (localStorage.getItem('endpoint')) {
-			this.getInfoClientStorage();
+			this.calledUser = false;
 		}
 	}
 });
 
-socket.on('emitMessage', message => {
-	vm.showCallUser(message);
+socket.on('emitMessage', calledUser => {
+	vm.getCalledUser(calledUser);
 });

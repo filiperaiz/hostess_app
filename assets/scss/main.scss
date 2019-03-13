@@ -25,12 +25,30 @@ html {
 }
 
 body {
-	background-attachment: fixed;
+	-webkit-animation: slide 20s linear infinite;
+	animation: slide 20s linear infinite;
+	background: url(../img/bg-shape.png) repeat 0 0;
 	background-color: #369f93;
-	background-image: url(../img/bg-shape.png);
-	background-repeat: no-repeat;
 	background-size: cover;
 	height: 100%;
+}
+
+@-webkit-keyframes slide {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: -400px 0;
+	}
+}
+
+@keyframes slide {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: -400px 0;
+	}
 }
 
 #app {

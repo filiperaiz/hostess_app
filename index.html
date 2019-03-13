@@ -12,12 +12,12 @@
 		<!-- Vue Js -->
 		<script src="./assets/js/vue.js"></script>
 
-		<title>Hostess Painel</title>
+		<title>Hostess Panel</title>
 	</head>
 
 	<body>
 		<div id="app">
-			<section v-show="!callUser" class="welcome">
+			<section v-show="!calledUser" class="welcome">
 				<div class="container">
 					<div class="row justify-content-md-center">
 						<div class="col">
@@ -32,7 +32,7 @@
 				</div>
 			</section>
 
-			<section v-show="callUser" class="calling-user">
+			<section v-show="calledUser" class="calling-user">
 				<div class="container">
 					<div class="row justify-content-md-center">
 						<div class="col">
@@ -48,7 +48,7 @@
 				</div>
 			</section>
 
-			<section v-if="lastCalls.length > 0 && !callUser" class="last-calls">
+			<section v-if="lastCalledList.length > 0" class="last-calls">
 				<div class="container">
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
@@ -73,7 +73,7 @@
 			</section>
 
 			<footer>
-                <img @click="countSettings" :src="logoHostess" alt="" />
+				<img @click="openModalSettings" :src="logoHostess" alt="" />
 				<p>{{ copyright }}</p>
 			</footer>
 

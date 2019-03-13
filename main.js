@@ -7,8 +7,10 @@ app.on('ready', () => {
 	win = new BrowserWindow({
 		width: 1366,
 		height: 768,
-		fullscreen: false,
+		frame: false,
+		fullscreen: true,
 		backgroundColor: '#369f93',
+		titleBarStyle: 'hidden',
 		transparent: false
 	});
 
