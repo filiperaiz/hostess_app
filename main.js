@@ -26,11 +26,13 @@ app.on('ready', () => {
 	// Emitted when the window is closed
 	win.on('closed', function() {
 		win = null;
+		console.log('teste 1');
 	});
 });
 
 app.on('window-all-closed', () => {
-	if (process.platform != 'darwin') {
-		app.quit();
-	}
+	app.quit();
+	// if (process.platform != 'darwin') {
+	//     app.quit();
+	// }
 });

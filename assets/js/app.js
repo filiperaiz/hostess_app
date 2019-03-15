@@ -1,6 +1,7 @@
 const axios = require('axios');
 const socket = io.connect('http://localhost:3030/');
 const moment = require('moment');
+const electron = require('electron').remote;
 
 const ip = require('ip');
 const config = {};
@@ -39,7 +40,9 @@ const vm = new Vue({
 		fakeApiTime: 1 * 10000,
 		fakeApiCount: 0,
 		fakeApiCountLimit: 50,
-		fakeSetInterval: null
+		fakeSetInterval: null,
+
+		closeApp: electron.getCurrentWindow()
 	},
 
 	mounted() {
@@ -79,6 +82,10 @@ const vm = new Vue({
 		getCalledUser(calledUser) {
 			this.user = calledUser;
 			this.voiceCalledUser(calledUser);
+		},
+
+		close() {
+			this.closeApp.close();
 		},
 
 		voiceCalledUser(calledUser) {
