@@ -8,8 +8,8 @@ app.on('ready', () => {
 		width: 1366,
 		height: 768,
 		frame: false,
-		fullscreen: false,
-		backgroundColor: '#369f93',
+		fullscreen: true,
+		backgroundColor: '#23a196',
 		titleBarStyle: 'hidden',
 		transparent: false
 	});
