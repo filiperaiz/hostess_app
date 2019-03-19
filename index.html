@@ -23,7 +23,7 @@
 						<div class="col">
 							<div class="infos">
 								<img class="logo" :src="hospital.logo" alt="" />
-								<h1 class="name">Seja bem vindo ao <br />{{ hospital.name }}</h1>
+								<h1 class="name">Seja bem vindo ao {{ hospital.name }}</h1>
 								<h2 class="current-time">{{ currentTime }}</h2>
 								<h3 class="current-date">{{ currentDate }}</h3>
 							</div>
@@ -38,7 +38,7 @@
 						<div class="col">
 							<div class="infos">
 								<img class="photo" :src="user.photo" alt="" />
-								<h3 class="name">{{ user.name }}</h3>
+								<h3 class="name">{{ user.firstName }}</h3>
 								<h4 class="destination">
 									{{ user.destination }}
 								</h4>
@@ -48,7 +48,7 @@
 				</div>
 			</section>
 
-			<section v-if="lastCalledList.length > 0" class="last-calls">
+			<section v-show="!calledUser && lastCalledList.length > 0" class="last-calls">
 				<div class="container">
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
@@ -57,13 +57,11 @@
 									<img class="photo" :src="item.photo" alt="" />
 								</div>
 								<div class="card-body">
-									<h5 v-if="item.name.length < 25" class="name">{{ item.name }}</h5>
-									<h5 v-if="item.name.length>= 25" class="name">
-										{{ item.name.substring(0, 25) + '..' }}
-									</h5>
-									<p class="destination">
-										{{ item.destination }}
-									</p>
+									<h5 v-if="item.firstName.length < 25" class="firstname">{{ item.firstName }}</h5>
+									<h5 v-if="item.firstName.length>= 25" class="lastname">{{ item.firstName.substring(0, 25) + '..' }}</h5>
+									<h6 class="lastname">{{ item.lastName}}</h5>
+									<p class="destination">{{ item.destination }}</p>
+									<p class="floor">{{ item.floor }}</p>
 									<p class="time">{{ updateTimeAgo(item.time) }}</p>
 								</div>
 							</div>

@@ -8,7 +8,7 @@ app.on('ready', () => {
 		width: 1366,
 		height: 768,
 		frame: false,
-		fullscreen: true,
+		fullscreen: false,
 		backgroundColor: '#369f93',
 		titleBarStyle: 'hidden',
 		transparent: false

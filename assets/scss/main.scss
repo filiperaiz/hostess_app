@@ -1,3 +1,27 @@
+$green: #23a196;
+$white: #e8e5e3;
+$black: #4d4d4d;
+
+@font-face {
+	font-family: 'Franklin Gothic Book';
+	font-style: normal;
+	font-weight: normal;
+	src: url('../fonts/FranklinGothic-Book.eot');
+	src: url('../fonts/FranklinGothic-Book.eot?#iefix') format('embedded-opentype'), url('../fonts/FranklinGothic-Book.woff2') format('woff2'),
+		url('../fonts/FranklinGothic-Book.woff') format('woff'), url('../fonts/FranklinGothic-Book.ttf') format('truetype'),
+		url('../fonts/FranklinGothic-Book.svg#FranklinGothic-Book') format('svg');
+}
+
+@font-face {
+	font-family: 'Bebas Neue';
+	font-style: normal;
+	font-weight: normal;
+	src: url('../fonts/BebasNeue-Regular.eot');
+	src: url('../fonts/BebasNeue-Regular.eot?#iefix') format('embedded-opentype'), url('../fonts/BebasNeue-Regular.woff2') format('woff2'),
+		url('../fonts/BebasNeue-Regular.woff') format('woff'), url('../fonts/BebasNeue-Regular.ttf') format('truetype'),
+		url('../fonts/BebasNeue-Regular.svg#BebasNeue-Regular') format('svg');
+}
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
 
 body,
@@ -17,7 +41,9 @@ i,
 strong,
 ul,
 li {
-	font-family: 'Open Sans', sans-serif !important;
+	font-family: 'Franklin Gothic Book';
+	font-style: normal;
+	font-weight: normal;
 }
 
 html {
@@ -28,7 +54,7 @@ body {
 	-webkit-animation: slide 20s linear infinite;
 	animation: slide 20s linear infinite;
 	background: url(../img/bg-shape.png) repeat 0 0;
-	background-color: #369f93;
+	background-color: $green;
 	background-size: cover;
 	height: 100%;
 }
@@ -52,7 +78,7 @@ body {
 }
 
 #app {
-	/* align-content: center; */
+	align-content: center;
 	align-items: center;
 	display: -webkit-box;
 	display: -moz-box;
@@ -75,27 +101,34 @@ body {
 	.logo {
 		display: block;
 		margin: 0 auto 25px;
-		max-width: 150px;
+		max-width: 200px;
 		width: 100%;
 	}
 	.name {
-		color: #fff;
-		font-size: 50px;
+		color: $white;
+		font-family: 'Bebas Neue';
+		font-size: 2vw;
 		font-weight: bold;
-		letter-spacing: -2px;
-		margin-bottom: 25px;
+		letter-spacing: 0;
+		margin-bottom: 20px;
+		text-transform: uppercase;
 	}
 	.current-time {
-		color: #fff;
-		font-size: 75px;
+		color: $white;
+		font-family: 'Bebas Neue';
+		font-size: 10vw;
 		font-weight: bold;
-		margin-bottom: 25px;
+		line-height: 1;
+		margin-bottom: 0;
+		text-transform: uppercase;
 	}
 	.current-date {
-		color: #fff;
-		font-size: 40px;
-		font-weight: bold;
+		color: $white;
+		font-family: 'Bebas Neue';
+		font-size: 3.4vw;
+		font-weight: normal;
 		margin-bottom: 0;
+		text-transform: uppercase;
 	}
 }
 
@@ -109,7 +142,7 @@ body {
 			background-position: center center;
 			background-repeat: no-repeat;
 			background-size: cover;
-			border: 10px solid #fff;
+			border: 10px solid $white;
 			border-radius: 20px;
 			display: block;
 			height: 400px;
@@ -118,18 +151,16 @@ body {
 			width: 100%;
 		}
 		.name {
-			color: #fff;
-			font-size: 45px;
+			color: $white;
+			font-size: 8vh;
 			font-weight: bold;
-			letter-spacing: -2px;
 			margin-bottom: 15px;
-			text-transform: capitalize;
+			text-transform: uppercase;
 		}
 		.destination {
-			color: #fff;
-			font-size: 35px;
+			color: $white;
+			font-size: 6vh;
 			font-weight: bold;
-			letter-spacing: -2px;
 			margin-bottom: 0;
 		}
 	}
@@ -137,9 +168,10 @@ body {
 
 .last-calls {
 	padding-bottom: 25px;
+	padding-top: 25px;
 	width: 100%;
 	.box-card {
-		background-color: #fff;
+		background-color: $white;
 		border-radius: 20px;
 		display: flex;
 		flex-direction: row;
@@ -163,28 +195,43 @@ body {
 		}
 		.card-body {
 			display: inline-block;
-			padding-bottom: 12px;
-			padding-left: 12px;
-			padding-right: 10px;
-			padding-top: 12px;
+			padding: 10px;
 			position: relative;
-			.name {
-				font-size: 22px;
+			width: 70%;
+
+			.firstname {
+				color: $black;
+				font-size: 3vh;
 				font-weight: bold;
-				margin-bottom: 15px;
+				margin: 0;
 				text-transform: capitalize;
 			}
+
 			.destination {
-				font-size: 18px;
+				color: $black;
+				font-size: 2.5vh;
 				font-weight: bold;
+				line-height: 1;
+				margin: 10px 0 0;
 			}
+
+			.lastname,
+			.floor {
+				color: $black;
+				font-size: 1.8vh;
+				font-weight: normal;
+				margin: 0;
+				text-transform: uppercase;
+			}
+
 			.time {
-				bottom: 12px;
-				font-size: 13px;
+				bottom: 5px;
+				color: $black;
+				font-size: 1.5vh;
 				font-weight: bold;
-				left: 12px;
 				margin-bottom: 0;
 				position: absolute;
+				right: 10px;
 			}
 		}
 	}
@@ -199,9 +246,9 @@ footer {
 	text-align: center;
 	width: 100%;
 	p {
-		color: #fff;
+		color: $white;
 		display: inline-block;
-		font-size: 12px;
+		font-size: 1.5vh;
 		font-weight: bold;
 		margin: 0;
 		vertical-align: middle;

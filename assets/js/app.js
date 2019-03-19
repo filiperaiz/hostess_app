@@ -21,7 +21,7 @@ const vm = new Vue({
 		calledUser: false,
 		currentTime: null,
 		currentDate: null,
-		copyright: '© 2019. Hostess. Todos os Direitos Reservados.',
+		copyright: 'Tecnologia em gestão de recepção',
 		logoHostess: 'assets/img/logo-horizonatal-white.png',
 		showModal: false,
 		endpoint: '',
@@ -31,7 +31,7 @@ const vm = new Vue({
 		voiceSynth: window.speechSynthesis,
 		voiceList: [],
 		voiceSelected: 0,
-		voicePitch: 12, // De [0 - 20], defaults to 10
+		voicePitch: 14, // De [0 - 20], defaults to 10
 		voiceRate: 8, // De [0 - 10], defaults to 10
 		voiceVolume: 10, // De [0 - 10], defaults to 10
 
@@ -76,7 +76,7 @@ const vm = new Vue({
 				this.currentTime = moment().format('LTS');
 			}, 1 * 1000);
 
-			this.currentDate = moment().format('LL');
+			this.currentDate = moment().format('dddd, DD MMMM');
 		},
 
 		getCalledUser(calledUser) {
@@ -92,7 +92,7 @@ const vm = new Vue({
 			let treatment = calledUser.treatment || '';
 			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
 
-			let voiceMessage = `${treatment} ${calledUser.name}, por favor, dirija-se ao ${calledUser.destination}.`;
+			let voiceMessage = `${treatment} ${calledUser.firstName}, por favor, dirija-se ao ${calledUser.destination}.`;
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
 			if ('speechSynthesis' in window) {
@@ -191,12 +191,15 @@ const vm = new Vue({
 				}
 
 				let idx = this.fakeApiCount++;
-				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+				let firstName = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+				let lastName = `${this.fakeApi[idx].name.last} ${this.fakeApi[idx].name.first}`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
 				let params = {
-					name: name,
+					firstName: firstName,
+					lastName: lastName,
 					destination: `Guichê ${idx + 1}`,
+					floor: `Recepção térreo`,
 					photo: photo
 				};
 
@@ -205,7 +208,7 @@ const vm = new Vue({
 		},
 
 		stopFakeApi() {
-			voiceSpeech.cancel();
+			this.voiceSynth.cancel();
 			clearInterval(this.fakeSetInterval);
 
 			this.lastCalledList = [];
