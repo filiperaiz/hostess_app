@@ -37,10 +37,12 @@
 					<div class="row justify-content-md-center">
 						<div class="col">
 							<div class="infos">
-								<img class="photo" :src="user.photo" alt="" />
-								<h3 class="name">{{ user.firstName }}</h3>
+                                <img v-if="user.treatment == ''" class="photo" :src="user.photo" alt="" />
+                                <h4 class="treatment" v-if="user.treatment !== ''">{{ user.treatment }}</h4>
+								<h3 class="name">{{ user.firstName }} {{ user.lastName }}</h3>
+
 								<h4 class="destination">
-									{{ user.destination }}
+									{{ user.destination }} <span v-if="user.floor !== ''">- {{ user.floor }}</span>
 								</h4>
 							</div>
 						</div>
@@ -52,14 +54,13 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
-							<div class="box-card clearfix">
+							<div class="box-card clearfix" :class="item.treatment === '' ? 'show-img' : 'hide-img' ">
 								<div class="card-photo">
 									<img class="photo" :src="item.photo" alt="" />
 								</div>
 								<div class="card-body">
-									<h5 v-if="item.firstName.length < 25" class="firstname">{{ item.firstName }}</h5>
-									<h5 v-if="item.firstName.length>= 25" class="lastname">{{ item.firstName.substring(0, 25) + '..' }}</h5>
-									<h6 class="lastname">{{ item.lastName}}</h5>
+                                    <p class="treatment" v-if="item.treatment !== ''">{{ item.treatment }}</p>
+									<h5 class="firstname">{{ item.firstName }} <span class="lastname">{{ item.lastName}}</h5></h5>
 									<p class="destination">{{ item.destination }}</p>
 									<p class="floor">{{ item.floor }}</p>
 									<p class="time">{{ updateTimeAgo(item.time) }}</p>

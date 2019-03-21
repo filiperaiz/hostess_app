@@ -22,7 +22,7 @@ const vm = new Vue({
 		currentTime: null,
 		currentDate: null,
 		copyright: 'Tecnologia em gestão de recepção',
-		logoHostess: 'assets/img/logo-horizonatal-white.png',
+		logoHostess: 'assets/img/hostess.png',
 		showModal: false,
 		endpoint: '',
 		urlIp: `http://${config.ip}:${config.port}/`,
@@ -80,8 +80,28 @@ const vm = new Vue({
 		},
 
 		getCalledUser(calledUser) {
-			this.user = calledUser;
-			this.voiceCalledUser(calledUser);
+			const name = calledUser.name.split(' ');
+			const firstName = name[0];
+			const lastName = name[name.length - 1];
+
+			const dest = calledUser.destination.split('-');
+			const destination = dest[0];
+			const floor = dest[dest.length - 1];
+
+			let treatment = calledUser.treatment !== '' ? calledUser.treatment : '';
+			treatment = treatment.replace(/do Sr\./g, 'do Senhor,').replace(/da Sra\./g, 'da Senhora,');
+
+			const params = {
+				treatment: treatment,
+				firstName: firstName,
+				lastName: lastName,
+				destination: destination,
+				floor: floor === destination ? '' : floor,
+				photo: calledUser.photo
+			};
+
+			this.user = params;
+			this.voiceCalledUser(params);
 		},
 
 		close() {
@@ -89,10 +109,7 @@ const vm = new Vue({
 		},
 
 		voiceCalledUser(calledUser) {
-			let treatment = calledUser.treatment || '';
-			treatment = treatment.replace(/Sr\./g, '').replace(/Sra\./g, '');
-
-			let voiceMessage = `${treatment} ${calledUser.firstName}, por favor, dirija-se ao ${calledUser.destination}.`;
+			let voiceMessage = `${calledUser.treatment} ${calledUser.firstName} ${calledUser.lastName}, por favor, dirija-se ao ${calledUser.destination} ${calledUser.floor}.`;
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
 			if ('speechSynthesis' in window) {
@@ -192,14 +209,21 @@ const vm = new Vue({
 
 				let idx = this.fakeApiCount++;
 				let firstName = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
-				let lastName = `${this.fakeApi[idx].name.last} ${this.fakeApi[idx].name.first}`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
+				let treatment = '';
+				let destination = `Guichê ${idx + 1} - Recepção térreo`;
+
+				if (idx % 2 !== 0) {
+					treatment = 'Acompanhante do Sr.';
+					destination = 'sala de recuperação';
+					photo = '';
+				}
+
 				let params = {
-					firstName: firstName,
-					lastName: lastName,
-					destination: `Guichê ${idx + 1}`,
-					floor: `Recepção térreo`,
+					treatment: treatment,
+					name: firstName,
+					destination: destination,
 					photo: photo
 				};
 

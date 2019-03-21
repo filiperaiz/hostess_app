@@ -150,6 +150,13 @@ body {
 			max-width: 400px;
 			width: 100%;
 		}
+
+		.treatment {
+			color: $white;
+			font-size: 5vh;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
 		.name {
 			color: $white;
 			font-size: 8vh;
@@ -162,6 +169,11 @@ body {
 			font-size: 6vh;
 			font-weight: bold;
 			margin-bottom: 0;
+			text-transform: uppercase;
+
+			span {
+				font-weight: bold;
+			}
 		}
 	}
 }
@@ -199,26 +211,43 @@ body {
 			position: relative;
 			width: 70%;
 
+			.treatment {
+				color: $black;
+				font-size: 1.5vh;
+				font-weight: normal;
+				margin: 0;
+				text-transform: uppercase;
+			}
+
 			.firstname {
 				color: $black;
-				font-size: 3vh;
+				font-size: 2.5vh;
 				font-weight: bold;
 				margin: 0;
 				text-transform: capitalize;
 			}
 
+			.lastname {
+				color: $black;
+				display: block;
+				font-size: 1.5vh;
+				font-weight: normal;
+				margin: 0;
+				text-transform: uppercase;
+			}
+
 			.destination {
 				color: $black;
-				font-size: 2.5vh;
+				font-size: 2vh;
 				font-weight: bold;
 				line-height: 1;
 				margin: 10px 0 0;
+				text-transform: capitalize;
 			}
 
-			.lastname,
 			.floor {
 				color: $black;
-				font-size: 1.8vh;
+				font-size: 1.5vh;
 				font-weight: normal;
 				margin: 0;
 				text-transform: uppercase;
@@ -227,11 +256,32 @@ body {
 			.time {
 				bottom: 5px;
 				color: $black;
-				font-size: 1.5vh;
+				font-size: 1.2vh;
 				font-weight: bold;
 				margin-bottom: 0;
 				position: absolute;
 				right: 10px;
+			}
+		}
+
+		&.hide-img {
+			.card-photo {
+				display: none;
+			}
+
+			.card-body {
+				display: block;
+				min-height: 150px;
+				width: 100%;
+
+				.lastname {
+					color: $black;
+					display: inline-block;
+					font-size: 2.5vh;
+					font-weight: bold;
+					margin: 0;
+					text-transform: capitalize;
+				}
 			}
 		}
 	}
@@ -255,10 +305,9 @@ footer {
 	}
 
 	img {
-		display: inline-block;
-		margin-right: 5px;
-		vertical-align: middle;
-		width: 20px;
+		display: block;
+		margin: 0 auto;
+		width: 100px;
 	}
 }
 
