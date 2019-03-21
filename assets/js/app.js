@@ -89,7 +89,7 @@ const vm = new Vue({
 			const floor = dest[dest.length - 1];
 
 			let treatment = calledUser.treatment !== '' ? calledUser.treatment : '';
-			treatment = treatment.replace(/do Sr\./g, 'do Senhor,').replace(/da Sra\./g, 'da Senhora,');
+			treatment = treatment.replace(/do Sr\./g, 'de').replace(/da Sra\./g, 'de');
 
 			const params = {
 				treatment: treatment,
@@ -104,12 +104,18 @@ const vm = new Vue({
 			this.voiceCalledUser(params);
 		},
 
-		close() {
-			this.closeApp.close();
-		},
-
 		voiceCalledUser(calledUser) {
-			let voiceMessage = `${calledUser.treatment} ${calledUser.firstName} ${calledUser.lastName}, por favor, dirija-se ao ${calledUser.destination} ${calledUser.floor}.`;
+			const articleEqual = calledUser.destination.toUpperCase() === 'sala de recuperação'.toUpperCase();
+			let article = 'ao';
+
+			if (articleEqual) {
+				article = 'à';
+			}
+
+			let voiceMessage = `${calledUser.treatment} ${calledUser.firstName} ${calledUser.lastName}, por favor, dirija-se ${article} ${calledUser.destination} ${
+				calledUser.floor
+			}.`;
+
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
 			if ('speechSynthesis' in window) {
@@ -195,6 +201,10 @@ const vm = new Vue({
 			let infoClient = JSON.parse(localStorage.getItem('infoClient'));
 			this.hospital.name = infoClient.name;
 			this.hospital.logo = infoClient.logo;
+		},
+
+		close() {
+			this.closeApp.close();
 		},
 
 		getFakeApi() {
