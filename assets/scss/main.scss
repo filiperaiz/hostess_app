@@ -182,48 +182,69 @@ body {
 	padding-bottom: 25px;
 	padding-top: 25px;
 	width: 100%;
+
 	.box-card {
 		background-color: $white;
-		border-radius: 20px;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
+		border-radius: 10px;
+		// height: 175px;
 		overflow: hidden;
 		width: 100%;
-		.card-photo {
-			display: inline-block;
-			height: 150px;
-			overflow: hidden;
-			width: 150px;
-			.photo {
-				background-image: url(../img/avatar.png);
-				background-position: center center;
-				background-repeat: no-repeat;
-				background-size: cover;
-				display: block;
-				height: 150px;
-				width: 150px;
-			}
+
+		.up {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			width: 100%;
 		}
-		.card-body {
-			display: inline-block;
+
+		.photo {
+			background-image: url(../img/avatar.png);
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			display: block;
+			height: 127px;
+			width: 30%;
+		}
+
+		.namebox {
+			align-content: flex-start;
+			align-items: flex-start;
+			background-color: #fff;
+			display: flex;
+			flex-flow: column;
+			flex-wrap: wrap;
+			height: 127px;
+			justify-content: center;
 			padding: 10px;
 			position: relative;
 			width: 70%;
 
-			.treatment {
-				color: $black;
-				font-size: 1.5vh;
-				font-weight: normal;
-				margin: 0;
+			.typelabel {
+				border-radius: 5px;
+				color: #fff;
+				font-size: 1.3vh;
+				font-weight: bold;
+				left: 10px;
+				padding: 1px 10px;
+				position: absolute;
 				text-transform: uppercase;
+				top: 10px;
+
+				&.acompanhante {
+					background: #ffc107;
+				}
+
+				&.paciente {
+					background: $green;
+				}
 			}
 
 			.firstname {
 				color: $black;
-				font-size: 2.5vh;
+				font-size: 3vh;
 				font-weight: bold;
-				margin: 0;
+				margin: 25px 0 0 0;
 				text-transform: capitalize;
 			}
 
@@ -236,51 +257,50 @@ body {
 				text-transform: uppercase;
 			}
 
-			.destination {
-				color: $black;
-				font-size: 2vh;
-				font-weight: bold;
-				line-height: 1;
-				margin: 10px 0 0;
-				text-transform: capitalize;
-			}
-
-			.floor {
-				color: $black;
-				font-size: 1.5vh;
-				font-weight: normal;
-				margin: 0;
-				text-transform: uppercase;
-			}
-
 			.time {
-				bottom: 5px;
 				color: $black;
 				font-size: 1.2vh;
 				font-weight: bold;
 				margin-bottom: 0;
 				position: absolute;
-				right: 10px;
+				right: 13px;
+				top: 13px;
+			}
+		}
+
+		.destinationbox {
+			background-color: $white;
+			padding: 10px;
+			width: 100%;
+
+			.destination {
+				color: $black;
+				font-size: 1.5vh;
+				font-weight: bold;
+				line-height: 1;
+				margin: 0;
+				text-align: center;
+				text-transform: uppercase;
+
+				.floor {
+					text-transform: capitalize;
+				}
 			}
 		}
 
 		&.hide-img {
-			.card-photo {
+			.photo {
 				display: none;
 			}
 
-			.card-body {
-				display: block;
-				min-height: 150px;
+			.namebox {
 				width: 100%;
-
-				.lastname {
-					color: $black;
-					display: inline-block;
-					font-size: 2.5vh;
-					font-weight: bold;
-					margin: 0;
-					text-transform: capitalize;
+			}
+			.destinationbox {
+				.destination {
+					.floor {
+						display: none;
+					}
 				}
 			}
 		}

@@ -21,7 +21,7 @@ const vm = new Vue({
 		calledUser: false,
 		currentTime: null,
 		currentDate: null,
-		copyright: 'Tecnologia em gestão de recepção',
+		copyright: 'Tecnologia em Gestão de Atendimento',
 		logoHostess: 'assets/img/hostess.png',
 		showModal: false,
 		endpoint: '',
@@ -88,8 +88,11 @@ const vm = new Vue({
 			const destination = dest[0];
 			const floor = dest[dest.length - 1];
 
-			let treatment = calledUser.treatment !== '' ? calledUser.treatment : '';
-			treatment = treatment.replace(/do Sr\./g, 'de').replace(/da Sra\./g, 'de');
+			let treatment = '';
+
+			if (calledUser.treatment) {
+				treatment = calledUser.treatment.replace(/do Sr\./g, 'de').replace(/da Sra\./g, 'de');
+			}
 
 			const params = {
 				treatment: treatment,
@@ -143,8 +146,16 @@ const vm = new Vue({
 			let addItem = true;
 
 			if (this.lastCalledList.length > 0) {
-				for (let element of this.lastCalledList) {
-					if (element.name === calledUser.name && element.destination === calledUser.destination) {
+				const listLastFour = this.lastCalledList.slice(0, 4);
+
+				for (let element of listLastFour) {
+					const elementName = `${element.firstName} ${element.lastName}`;
+					const calledUserName = `${calledUser.firstName} ${calledUser.lastName}`;
+
+					const nameBoolean = Object.is(elementName, calledUserName);
+					const destinationBoolean = Object.is(element.destination, calledUser.destination);
+
+					if (nameBoolean && destinationBoolean) {
 						addItem = false;
 						break;
 					}
@@ -217,25 +228,27 @@ const vm = new Vue({
 					this.fakeApiCount = 0;
 				}
 
+				let params = {};
 				let idx = this.fakeApiCount++;
-				let firstName = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+
+				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+				let destination = `Guichê ${idx + 1} - Recepção térreo`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
-				let treatment = '';
-				let destination = `Guichê ${idx + 1} - Recepção térreo`;
-
-				if (idx % 2 !== 0) {
-					treatment = 'Acompanhante do Sr.';
-					destination = 'sala de recuperação';
-					photo = '';
-				}
-
-				let params = {
-					treatment: treatment,
-					name: firstName,
+				params = {
+					name: name,
 					destination: destination,
 					photo: photo
 				};
+
+				if (idx % 2 !== 0) {
+					params = {
+						treatment: 'Acompanhante do Sr.',
+						name: name,
+						destination: 'sala de recuperação',
+						photo: ''
+					};
+				}
 
 				axios.post(this.urlIp, params, this.headers);
 			}, this.fakeApiTime);
