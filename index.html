@@ -37,9 +37,9 @@
 					<div class="row justify-content-md-center">
 						<div class="col">
 							<div class="infos">
-								<img v-if="user.treatment == ''" class="photo" :src="user.photo" alt="" />
-								<h4 class="treatment" v-if="user.treatment !== ''">{{ user.treatment }}</h4>
-								<h3 class="name">{{ user.firstName }} {{ user.lastName }}</h3>
+								<img v-show="user.treatment == ''" class="photo" :src="user.photo" alt="" />
+								<h4 class="treatment" v-show="user.treatment !== null">{{ user.treatment }}</h4>
+								<h3 class="name">{{ user.fullname }}</h3>
 
 								<h4 class="destination">
 									{{ user.destination }} <span v-if="user.floor !== ''">- {{ user.floor }}</span>
@@ -55,19 +55,15 @@
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
 							<div class="box-card clearfix" :class="item.treatment === '' ? 'show-img' : 'hide-img' ">
-								<div class="up">
-									<img class="photo" :src="item.photo" alt="" />
-									<div class="namebox">
-										<span class="typelabel" :class="item.treatment == '' ? 'paciente' : 'acompanhante' ">{{
-											item.treatment == '' ? 'paciente' : 'acompanhante'
-										}}</span>
-										<h5 class="firstname">{{ item.firstName }} {{ item.lastName }}</h5>
-										<p class="time">{{ updateTimeAgo(item.time) }}</p>
-									</div>
-								</div>
+								<div class="box-img" :style="{ 'background-image': 'url(' + item.photo + ')' }"></div>
 
-								<div class="destinationbox">
-									<p class="destination">{{ item.destination }} {{ item.floor }}</p>
+								<div class="box-info">
+									<span class="typelabel" v-show="item.treatment">acompanhante</span>
+
+									<h3 class="firstname">{{ item.shortname }}</h3>
+									<h4 class="destination">{{ item.destination }}</h4>
+									<h5 class="floor">{{ item.floor }}</h5>
+									<p class="time">{{ updateTimeAgo(item.time) }}</p>
 								</div>
 							</div>
 						</div>

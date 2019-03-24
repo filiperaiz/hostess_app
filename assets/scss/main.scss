@@ -22,8 +22,6 @@ $black: #4d4d4d;
 		url('../fonts/BebasNeue-Regular.svg#BebasNeue-Regular') format('svg');
 }
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
-
 body,
 h1,
 h2,
@@ -186,122 +184,97 @@ body {
 	.box-card {
 		background-color: $white;
 		border-radius: 10px;
-		// height: 175px;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		height: 175px;
+		justify-content: flex-start;
 		overflow: hidden;
 		width: 100%;
 
-		.up {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			width: 100%;
-		}
-
-		.photo {
+		.box-img {
+			background-color: $white;
 			background-image: url(../img/avatar.png);
 			background-position: center center;
 			background-repeat: no-repeat;
 			background-size: cover;
-			display: block;
-			height: 127px;
 			width: 30%;
 		}
 
-		.namebox {
-			align-content: flex-start;
-			align-items: flex-start;
+		.box-info {
 			background-color: #fff;
-			display: flex;
-			flex-flow: column;
-			flex-wrap: wrap;
-			height: 127px;
-			justify-content: center;
 			padding: 10px;
 			position: relative;
 			width: 70%;
-
-			.typelabel {
-				border-radius: 5px;
-				color: #fff;
-				font-size: 1.3vh;
-				font-weight: bold;
-				left: 10px;
-				padding: 1px 10px;
-				position: absolute;
-				text-transform: uppercase;
-				top: 10px;
-
-				&.acompanhante {
-					background: #ffc107;
-				}
-
-				&.paciente {
-					background: $green;
-				}
-			}
-
-			.firstname {
-				color: $black;
-				font-size: 3vh;
-				font-weight: bold;
-				margin: 25px 0 0 0;
-				text-transform: capitalize;
-			}
-
-			.lastname {
-				color: $black;
-				display: block;
-				font-size: 1.5vh;
-				font-weight: normal;
-				margin: 0;
-				text-transform: uppercase;
-			}
-
-			.time {
-				color: $black;
-				font-size: 1.2vh;
-				font-weight: bold;
-				margin-bottom: 0;
-				position: absolute;
-				right: 13px;
-				top: 13px;
-			}
 		}
 
-		.destinationbox {
-			background-color: $white;
-			padding: 10px;
+		.firstname {
+			border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+			color: $black;
+			font-size: 3vh;
+			font-weight: bold;
+			margin-bottom: 0.5rem;
+			padding-bottom: 0.5rem;
+			text-transform: capitalize;
+            width: 100%;
+            line-height: 1;
+		}
+
+		.destination {
+			color: $black;
+			font-size: 2.2vh;
+			font-weight: bold;
+			line-height: 1;
+			margin: 0;
+			text-transform: uppercase;
 			width: 100%;
+		}
 
-			.destination {
-				color: $black;
-				font-size: 1.5vh;
-				font-weight: bold;
-				line-height: 1;
-				margin: 0;
-				text-align: center;
-				text-transform: uppercase;
+		.floor {
+			font-size: 1.5vh;
+			font-weight: normal;
+			margin-bottom: 0;
+			margin-top: 0.5rem;
+			text-transform: uppercase;
+		}
 
-				.floor {
-					text-transform: capitalize;
-				}
-			}
+		.typelabel {
+			background: #ffc107;
+			border-radius: 5px;
+			bottom: 10px;
+			color: #fff;
+			display: inline-block;
+			font-size: 1.2vh;
+			font-weight: bold;
+			padding: 1px 10px;
+			position: absolute;
+			text-transform: uppercase;
+		}
+
+		.time {
+			bottom: 7px;
+			color: $black;
+			font-size: 1.2vh;
+			font-weight: bold;
+			left: 10px;
+			margin-bottom: 0;
+			position: absolute;
+			right: 10px;
+			text-align: right;
+			text-transform: uppercase;
 		}
 
 		&.hide-img {
-			.photo {
-				display: none;
-			}
+			// .box-img {
+			// 	display: none;
+			// }
 
-			.namebox {
-				width: 100%;
-			}
-			.destinationbox {
-				.destination {
-					.floor {
-						display: none;
-					}
-				}
+			// .box-info {
+			// 	width: 100%;
+			// }
+
+			.floor {
+				display: none;
 			}
 		}
 	}

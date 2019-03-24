@@ -5,8 +5,8 @@ app.on('ready', () => {
 
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 1366,
-		height: 768,
+		width: 1920,
+		height: 1080,
 		frame: false,
 		fullscreen: true,
 		backgroundColor: '#23a196',

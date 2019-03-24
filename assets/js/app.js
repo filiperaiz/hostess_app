@@ -83,6 +83,7 @@ const vm = new Vue({
 			const name = calledUser.name.split(' ');
 			const firstName = name[0];
 			const lastName = name[name.length - 1];
+			const shortName = `${firstName} ${lastName}`;
 
 			const dest = calledUser.destination.split('-');
 			const destination = dest[0];
@@ -91,19 +92,21 @@ const vm = new Vue({
 			let treatment = '';
 
 			if (calledUser.treatment) {
-				treatment = calledUser.treatment.replace(/do Sr\./g, 'de').replace(/da Sra\./g, 'de');
+				let treatmentLowerCase = calledUser.treatment.toLowerCase();
+
+				treatment = treatmentLowerCase.includes('acompanhante') ? 'Acompanhante de' : null;
 			}
 
 			const params = {
 				treatment: treatment,
-				firstName: firstName,
-				lastName: lastName,
+				fullname: calledUser.name,
+				shortname: shortName,
 				destination: destination,
 				floor: floor === destination ? '' : floor,
-				photo: calledUser.photo
+				photo: calledUser.photo !== '' ? calledUser.photo : 'assets/img/avatar.png'
 			};
 
-			this.user = params;
+			// this.user = params;
 			this.voiceCalledUser(params);
 		},
 
@@ -115,9 +118,7 @@ const vm = new Vue({
 				article = 'à';
 			}
 
-			let voiceMessage = `${calledUser.treatment} ${calledUser.firstName} ${calledUser.lastName}, por favor, dirija-se ${article} ${calledUser.destination} ${
-				calledUser.floor
-			}.`;
+			let voiceMessage = `${calledUser.treatment} ${calledUser.fullname}, por favor, dirija-se ${article} ${calledUser.destination} ${calledUser.floor}.`;
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
@@ -125,12 +126,13 @@ const vm = new Vue({
 				this.voiceSpeech.rate = this.voiceRate / 10;
 				this.voiceSpeech.pitch = (this.voicePitch / 20) * 2;
 				this.voiceSpeech.volume = this.voiceVolume / 10;
-				this.voiceSpeech.text = voiceMessage;
 				this.voiceSpeech.voice = this.voiceList[this.voiceSelected];
+				this.voiceSpeech.text = voiceMessage;
 
 				this.voiceSynth.speak(this.voiceSpeech);
 
 				this.voiceSpeech.onstart = () => {
+					this.user = calledUser;
 					this.listLastCalls(calledUser);
 					this.calledUser = true;
 				};
@@ -149,10 +151,7 @@ const vm = new Vue({
 				const listLastFour = this.lastCalledList.slice(0, 4);
 
 				for (let element of listLastFour) {
-					const elementName = `${element.firstName} ${element.lastName}`;
-					const calledUserName = `${calledUser.firstName} ${calledUser.lastName}`;
-
-					const nameBoolean = Object.is(elementName, calledUserName);
+					const nameBoolean = Object.is(element.fullname, calledUser.fullname);
 					const destinationBoolean = Object.is(element.destination, calledUser.destination);
 
 					if (nameBoolean && destinationBoolean) {
@@ -231,7 +230,7 @@ const vm = new Vue({
 				let params = {};
 				let idx = this.fakeApiCount++;
 
-				let name = `${this.fakeApi[idx].name.first} ${this.fakeApi[idx].name.last}`;
+				let name = `${this.fakeApi[idx].name.first} Pereira Costa ${this.fakeApi[idx].name.last}`;
 				let destination = `Guichê ${idx + 1} - Recepção térreo`;
 				let photo = `${this.fakeApi[idx].picture.large}`;
 
