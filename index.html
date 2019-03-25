@@ -55,7 +55,9 @@
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
 							<div class="box-card clearfix" :class="item.treatment === '' ? 'show-img' : 'hide-img' ">
-								<div class="box-img" :style="{ 'background-image': 'url(' + item.photo + ')' }"></div>
+								<div class="box-img">
+									<img class="photo" :src="item.photo" alt="" />
+								</div>
 
 								<div class="box-info">
 									<span class="typelabel" v-show="item.treatment">acompanhante</span>

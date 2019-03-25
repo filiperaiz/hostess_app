@@ -198,7 +198,16 @@ body {
 			background-position: center center;
 			background-repeat: no-repeat;
 			background-size: cover;
-			width: 30%;
+            width: 30%;
+            overflow: hidden;
+            position: relative;
+
+            .photo{
+                height: 100%;
+                position: absolute;
+                left: -20px;
+                width: 175px;
+            }
 		}
 
 		.box-info {
