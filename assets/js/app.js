@@ -91,10 +91,8 @@ const vm = new Vue({
 
 			let treatment = '';
 
-			if (calledUser.treatment) {
-				let treatmentLowerCase = calledUser.treatment.toLowerCase();
-
-				treatment = treatmentLowerCase.includes('acompanhante') ? 'Acompanhante de' : null;
+			if (calledUser.treatment !== undefined) {
+				treatment = calledUser.treatment.toLowerCase().includes('acompanhante') ? 'Acompanhante de' : '';
 			}
 
 			const params = {
@@ -103,18 +101,16 @@ const vm = new Vue({
 				shortname: shortName,
 				destination: destination,
 				floor: floor === destination ? '' : floor,
-				photo: calledUser.photo !== '' ? calledUser.photo : 'assets/img/avatar.png'
+				photo: calledUser.photo
 			};
 
-			// this.user = params;
 			this.voiceCalledUser(params);
 		},
 
 		voiceCalledUser(calledUser) {
-			const articleEqual = calledUser.destination.toUpperCase() === 'sala de recuperação'.toUpperCase();
 			let article = 'ao';
 
-			if (articleEqual) {
+			if (calledUser.destination.toLowerCase().includes('sala') || calledUser.destination.toLowerCase().includes('gestão')) {
 				article = 'à';
 			}
 

@@ -38,7 +38,7 @@
 						<div class="col">
 							<div class="infos">
 								<img v-show="user.treatment == ''" class="photo" :src="user.photo" alt="" />
-								<h4 class="treatment" v-show="user.treatment !== null">{{ user.treatment }}</h4>
+								<h4 v-show="user.treatment !== ''" class="treatment">{{ user.treatment }}</h4>
 								<h3 class="name">{{ user.fullname }}</h3>
 
 								<h4 class="destination">
@@ -54,13 +54,13 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-3" v-for="item in lastCalls">
-							<div class="box-card clearfix" :class="item.treatment === '' ? 'show-img' : 'hide-img' ">
+							<div class="box-card">
 								<div class="box-img">
 									<img class="photo" :src="item.photo" alt="" />
 								</div>
 
 								<div class="box-info">
-									<span class="typelabel" v-show="item.treatment">acompanhante</span>
+									<span class="typelabel" v-show="item.treatment !== ''">acompanhante</span>
 
 									<h3 class="firstname">{{ item.shortname }}</h3>
 									<h4 class="destination">{{ item.destination }}</h4>
