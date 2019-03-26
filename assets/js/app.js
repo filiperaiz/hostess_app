@@ -89,13 +89,20 @@ const vm = new Vue({
 			const destination = dest[0];
 			const floor = dest[dest.length - 1];
 
-			let treatment = '';
+			let treatmentLabel = false;
+			let treatment = calledUser.treatment || '';
 
-			if (calledUser.treatment !== undefined) {
-				treatment = calledUser.treatment.toLowerCase().includes('acompanhante') ? 'Acompanhante de' : '';
+			const treatmentArray = treatment.split(' ');
+
+			if (treatmentArray[0].toLowerCase() == 'acompanhante') {
+				treatment = 'Acompanhante de';
+				treatmentLabel = true;
+			} else {
+				treatment = '';
 			}
 
 			const params = {
+				label: treatmentLabel,
 				treatment: treatment,
 				fullname: calledUser.name,
 				shortname: shortName,
@@ -103,6 +110,10 @@ const vm = new Vue({
 				floor: floor === destination ? '' : floor,
 				photo: calledUser.photo
 			};
+
+			console.log(`=================================`);
+			console.log('Chamada entrada:', calledUser);
+			console.log('Chamada saida:', params);
 
 			this.voiceCalledUser(params);
 		},
@@ -118,12 +129,14 @@ const vm = new Vue({
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
 
+			console.log(`Mensagem formatada: ${JSON.stringify(voiceMessage)}`);
+
 			if ('speechSynthesis' in window) {
 				this.voiceSpeech.rate = this.voiceRate / 10;
 				this.voiceSpeech.pitch = (this.voicePitch / 20) * 2;
 				this.voiceSpeech.volume = this.voiceVolume / 10;
 				this.voiceSpeech.voice = this.voiceList[this.voiceSelected];
-				this.voiceSpeech.text = voiceMessage;
+				this.voiceSpeech.text = JSON.stringify(voiceMessage);
 
 				this.voiceSynth.speak(this.voiceSpeech);
 

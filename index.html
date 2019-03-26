@@ -37,8 +37,8 @@
 					<div class="row justify-content-md-center">
 						<div class="col">
 							<div class="infos">
-								<img v-show="user.treatment == ''" class="photo" :src="user.photo" alt="" />
-								<h4 v-show="user.treatment !== ''" class="treatment">{{ user.treatment }}</h4>
+								<img v-show="!user.label" class="photo" :src="user.photo" alt="" />
+								<h4 v-show="user.label" class="treatment">{{ user.treatment }}</h4>
 								<h3 class="name">{{ user.fullname }}</h3>
 
 								<h4 class="destination">
@@ -60,9 +60,9 @@
 								</div>
 
 								<div class="box-info">
-									<span class="typelabel" v-show="item.treatment !== ''">acompanhante</span>
-
-									<h3 class="firstname">{{ item.shortname }}</h3>
+                                    <span class="typelabel" v-show="item.label">acompanhante</span>
+                                    
+                                    <h3 class="firstname">{{ item.shortname }}</h3>
 									<h4 class="destination">{{ item.destination }}</h4>
 									<h5 class="floor">{{ item.floor }}</h5>
 									<p class="time">{{ updateTimeAgo(item.time) }}</p>
