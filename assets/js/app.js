@@ -101,6 +101,11 @@ const vm = new Vue({
 				treatment = '';
 			}
 
+			if (dest[0].toLowerCase().includes('sala')) {
+				treatmentLabel = true;
+				treatment = 'Acompanhante de';
+			}
+
 			const params = {
 				label: treatmentLabel,
 				treatment: treatment,
@@ -110,10 +115,6 @@ const vm = new Vue({
 				floor: floor === destination ? '' : floor,
 				photo: calledUser.photo
 			};
-
-			console.log(`=================================`);
-			console.log('Chamada entrada:', calledUser);
-			console.log('Chamada saida:', params);
 
 			this.voiceCalledUser(params);
 		},
@@ -128,8 +129,6 @@ const vm = new Vue({
 			let voiceMessage = `${calledUser.treatment} ${calledUser.fullname}, por favor, dirija-se ${article} ${calledUser.destination} ${calledUser.floor}.`;
 
 			voiceMessage = voiceMessage.replace(/  +/g, ' ');
-
-			console.log(`Mensagem formatada: ${JSON.stringify(voiceMessage)}`);
 
 			if ('speechSynthesis' in window) {
 				this.voiceSpeech.rate = this.voiceRate / 10;
