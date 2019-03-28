@@ -190,7 +190,7 @@ const vm = new Vue({
 		},
 
 		getSettings() {
-			if (!localStorage.getItem('endpoint') && this.endpoint !== '') {
+			if (this.endpoint !== '') {
 				this.getInfoClient(this.endpoint);
 			}
 
@@ -223,6 +223,11 @@ const vm = new Vue({
 
 		close() {
 			this.closeApp.close();
+		},
+        
+        clearStorage() {
+            localStorage.clear();
+			this.endpoint = ''
 		},
 
 		getFakeApi() {

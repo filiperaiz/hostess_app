@@ -60,9 +60,9 @@
 								</div>
 
 								<div class="box-info">
-                                    <span class="typelabel" v-show="item.label">acompanhante</span>
-                                    
-                                    <h3 class="firstname">{{ item.shortname }}</h3>
+									<span class="typelabel" v-show="item.label">acompanhante</span>
+
+									<h3 class="firstname">{{ item.shortname }}</h3>
 									<h4 class="destination">{{ item.destination }}</h4>
 									<h5 class="floor">{{ item.floor }}</h5>
 									<p class="time">{{ updateTimeAgo(item.time) }}</p>
@@ -118,6 +118,10 @@
 									<hr />
 
 									<button @click="close" class="btn btn-warning">Fechar o app</button>
+
+									<hr />
+
+									<button type="button" class="btn btn-warning" @click="clearStorage">Limpar Storage</button>
 								</div>
 
 								<div class="modal-footer">
