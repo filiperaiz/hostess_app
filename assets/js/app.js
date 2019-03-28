@@ -224,10 +224,10 @@ const vm = new Vue({
 		close() {
 			this.closeApp.close();
 		},
-        
-        clearStorage() {
-            localStorage.clear();
-			this.endpoint = ''
+
+		clearStorage() {
+			localStorage.clear();
+			this.endpoint = '';
 		},
 
 		getFakeApi() {
